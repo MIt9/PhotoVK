@@ -6,13 +6,14 @@
 //  Copyright (c) 2014 Dmitii Bilukha. All rights reserved.
 //
 
-#import "AlbumListViewController.h"
+#import "MITAlbumListViewController.h"
 
-@interface AlbumListViewController ()
+@interface MITAlbumListViewController ()
 
 @end
 
-@implementation AlbumListViewController
+@implementation MITAlbumListViewController
+@synthesize vkRequest;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -26,6 +27,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    if (vkRequest.token != nil) {
+        NSLog(@"Table view taken is: %@",[vkRequest token]);
+        [vkRequest getAlbumList];
+    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;

@@ -10,4 +10,7 @@
 
 @interface VKRequestAndParsing : NSObject
 
+
+-(void)logInRequest;
+-(void)logOutRequest;
 @end

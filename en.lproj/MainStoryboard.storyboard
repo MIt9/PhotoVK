@@ -63,11 +63,43 @@
                     <connections>
                         <outlet property="authView" destination="8Fq-9U-4Hk" id="dOg-0p-q7A"/>
                         <outlet property="indicator" destination="LXA-DD-qbw" id="cS4-wX-ITC"/>
+                        <outlet property="logOutButton" destination="4BA-XC-t2U" id="DDU-KT-3SZ"/>
+                        <segue destination="stM-7C-YHI" kind="push" identifier="toAlbumList" id="5gi-E6-gAF"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="382" y="209"/>
+            <point key="canvasLocation" x="380" y="209"/>
+        </scene>
+        <!--Album List View Controller-->
+        <scene sceneID="9c4-aq-UmQ">
+            <objects>
+                <tableViewController id="stM-7C-YHI" customClass="MITAlbumListViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="XsV-pQ-K3w">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" id="xjl-JU-eTd">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="stM-7C-YHI" id="umW-BE-TDp"/>
+                            <outlet property="delegate" destination="stM-7C-YHI" id="pRF-yj-l2I"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="Tdc-EK-99r"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="ZHR-rb-WRy" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="806" y="209"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wvv-d6-fsY">
@@ -89,6 +121,9 @@
         </scene>
     </scenes>
     <classes>
+        <class className="MITAlbumListViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumListViewController.h"/>
+        </class>
         <class className="MITViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewController.h"/>
             <relationships>
@@ -96,6 +131,7 @@
                 <relationship kind="action" name="login:"/>
                 <relationship kind="outlet" name="authView" candidateClass="UIWebView"/>
                 <relationship kind="outlet" name="indicator" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="logOutButton" candidateClass="UIButton"/>
             </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">

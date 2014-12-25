@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "StringBetween.h"
 
-@interface MITViewController : UIViewController
+@interface MITViewController : UIViewController<UIWebViewDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWebView *authView;
 @property (nonatomic) BOOL isAuth;
@@ -17,5 +18,6 @@
 @property (nonatomic, retain) NSString *secret;
 - (IBAction)login:(id)sender;
 - (IBAction)logOut:(id)sender;
+@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 
 @end

@@ -7,7 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CommonCrypto/CommonDigest.h>
 
 @interface NSString (StringBetween)
 - (NSString *)getStringBetweenString:(NSString *)first andString:(NSString *)second;
++ (NSString *) md5String:(NSString*)concat;
 @end

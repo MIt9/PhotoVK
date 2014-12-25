@@ -7,7 +7,8 @@
 //
 
 #import "MITViewController.h"
-#import "StringBetween.h"
+#import "MITRequest.h"
+#import "MITAlbumListViewController.h"
 
 @interface MITViewController ()
 
@@ -15,31 +16,32 @@
 
 @implementation MITViewController
 
-@synthesize authView, indicator, secret, isAuth;
+@synthesize authView, indicator, secret, isAuth, logOutButton;
+
+MITRequest *vkRequst;
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"Default.png"]];
+    self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loginBG.png"]];
     authView.hidden = YES;
     indicator.hidden = YES;
-    isAuth = YES;
+
+    [self isLogin];
     
     
-    
-    
-    
-	// Do any additional setup after loading the view, typically from a nib.
 }
+
+// making http request for autorithation
 - (void)linkFormAndRequestWithAppId:(NSString *)appID andScope:(NSString *)scope{
     NSString *authLink = [NSString stringWithFormat:@"http://api.vk.com/oauth/authorize?client_id=%@&scope=%@&redirect_uri=http://api.vk.com/blank.html&display=touch&response_type=token", appID, scope];
     NSURL *url = [NSURL URLWithString:authLink];
     NSURLRequest *authRequest = [[NSURLRequest alloc] initWithURL:url];
     
-    
     [authView loadRequest:authRequest];
-    
+    [authView setDelegate:self];  
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -50,68 +52,41 @@
 - (void)webViewDidFinishLoad:(UIWebView *)webView {
     [indicator stopAnimating];
     indicator.hidden = YES;
-    if ([authView.request.URL.absoluteString rangeOfString:@"access_token"].location != NSNotFound) {
-        
-        
-        NSString *accessToken = [authView.request.URL.absoluteString getStringBetweenString:@"access_token=" andString:@"&"];
-        
-        // Получаем id пользователя, пригодится нам позднее
-        NSArray *userAr = [[[[webView request] URL] absoluteString] componentsSeparatedByString:@"&user_id="];
-        
-        NSString *user_id = [userAr lastObject];
-        NSLog(@"User id: %@", user_id);
-        if(user_id){
-            [[NSUserDefaults standardUserDefaults] setObject:user_id forKey:@"VKAccessUserId"];
-        }
-        
-        if(accessToken){
-            [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"VKAccessToken"];
-            // Сохраняем дату получения токена. Параметр expires_in=86400 в ответе ВКонтакта, говорит сколько будет действовать токен.
-            // В данном случае, это для примера, мы можем проверять позднее истек ли токен или нет
-            [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"VKAccessTokenDate"];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            //Go to next screen AlbumList
-            
-            [self sendSuccessWithMessage:@"Login fine"];
-            
-            [self performSegueWithIdentifier:@"toAlbumList" sender:self];
-        }
-        
-        NSLog(@"vkWebView response: %@",[[[webView request] URL] absoluteString]);
-        
-        NSLog(@"VKAccessToken = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessToken"]);
-        NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
-        NSLog(@"VKAccessTokenDate = %@", accessToken);
-        
-        authView.hidden = YES;
-    } else if ([authView.request.URL.absoluteString rangeOfString:@"error"].location != NSNotFound) {
-        NSLog(@"Error: %@", authView.request.URL.absoluteString);
-        authView.hidden = YES;
-    }
-    
-    
+    [self logInRequest:webView];
     
     
 }
+-(void)viewDidAppear:(BOOL)animated{
+    [self isAuth];
+}
+
+    
 
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"toAlbumList"])
     {
-        // AlbumListViewController *album = [segue destinationViewController];
+        MITAlbumListViewController* albumList = [segue destinationViewController];
+        [albumList setVkRequest:vkRequst];
+        
         
     }
 }
+
 - (void)isLogin{
     if([[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessToken"] == 0){
         isAuth = NO;
+        logOutButton.hidden = YES;
+    }else{
+        vkRequst = [[MITRequest alloc]initFromNSUserDefaults];
+        logOutButton.hidden = NO;
+
     }
 }
 
 - (IBAction)login:(id)sender {
-    [self isLogin];
-    
+   
     if (isAuth == NO) {
         indicator.hidden = NO;
         [indicator startAnimating];
@@ -120,55 +95,91 @@
     }else{
         [self performSegueWithIdentifier:@"toAlbumList" sender:self];
     }
-    //    authView.hidden = NO;
-    //    [[VKConnector sharedInstance] startWithAppID:@"4683729"
-    //                                      permissons:@[@"photo"]
-    //                                         webView:authView
-    //                                        delegate:self];
+    NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
+    NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
+
 }
 
 - (IBAction)logOut:(id)sender {
-    // Запрос на logout
-    NSString *logout = @"http://api.vk.com/oauth/logout";
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:logout]
-                                                           cachePolicy:NSURLRequestReloadIgnoringLocalCacheData
-                                                       timeoutInterval:60.0];
-    NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
-    if(responseData){
-        NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:responseData options:0 error:nil];
-        //[[JSONDecoder decoder] parseJSONData:responseData];
-        NSLog(@"Logout: %@", dict);
+    [self logOutRequest];
+    isAuth = NO;
+    logOutButton.hidden = YES;
+}
+-(void)logInRequest:(UIWebView *)webView{
+    if ([webView.request.URL.absoluteString rangeOfString:@"access_token"].location != NSNotFound) {
         
-        // Приложение больше не авторизовано, можно удалить данные
-        isAuth = NO;
+        //geting token
+        NSString *accessToken = [webView.request.URL.absoluteString getStringBetweenString:@"access_token=" andString:@"&"];
+        // geting userID
+        NSArray *userAr = [[[[webView request] URL] absoluteString] componentsSeparatedByString:@"&user_id="];
+        NSString *user_id = [userAr lastObject];
+
+        if(user_id){
+            [[NSUserDefaults standardUserDefaults] setObject:user_id forKey:@"VKAccessUserId"];
+        }
+        
+        if(accessToken){
+            [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"VKAccessToken"];
+            //[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"VKAccessTokenDate"];
+            [[NSUserDefaults standardUserDefaults] synchronize];
+            
+            [self sendSuccessWithMessage:@"Login fine"];
+     
+            vkRequst = [[MITRequest alloc]initFromNSUserDefaults];
+        }
+        
+
+        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
+        NSLog(@"VKAccessUserId = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessUserId"]);
+        
+        webView.hidden = YES;
+        logOutButton.hidden = NO;
+        //Go to next screen AlbumList
+        [self performSegueWithIdentifier:@"toAlbumList" sender:self];
+        
+    } else if ([webView.request.URL.absoluteString rangeOfString:@"error"].location != NSNotFound) {
+        NSLog(@"Error: %@", webView.request.URL.absoluteString);
+        webView.hidden = YES;
+    }
+    
+    
+    
+}
+//logOut request
+-(void)logOutRequest{
+    // Delate all cookie
+    NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
+    for (NSHTTPCookie *cookie in [storage cookies]) {
+        [storage deleteCookie:cookie];
+    }
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessUserId"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessToken"];
-        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessTokenDate"];
+        //[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessTokenDate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        NSLog(@"VKAccessToken = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessToken"]);
+        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
         NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
-        NSLog(@"VKAccessTokenDate = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
         
-        [self sendSuccessWithMessage:@"Выход произведен успешно!"];
-    }
+        
+        [self sendSuccessWithMessage:@"You logout fine!"];
+    
 }
 - (void) sendFailedWithError:(NSString *)error {
     
-    UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Ошибка!"
+    UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Failed!"
                                                           message:error delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [myAlertView show];
     
 }
 
 - (void) sendSuccessWithMessage:(NSString *)message {
-    UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Успешно!"
+    UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Successfully!"
                                                           message:message delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil];
     [myAlertView show];
     
 }
+
 
 
 @end

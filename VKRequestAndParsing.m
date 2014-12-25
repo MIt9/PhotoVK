@@ -7,8 +7,10 @@
 //
 
 #import "VKRequestAndParsing.h"
+#import "StringBetween.h"
 
 @implementation VKRequestAndParsing
+
 
 -(void)getAlbumRequestWithUserId:(NSString *)userId andToken:(NSString *)token{
     NSString *link = [NSString stringWithFormat:@"http://api.vk.com/method/photos.getAlbums?uid=%@&access_token=%@", userId, token];
@@ -19,4 +21,5 @@
         
     }
 }
+//login request 
 @end
