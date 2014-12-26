@@ -14,18 +14,23 @@
 #import "StringBetween.h"
 
 @implementation MITRequest
+@synthesize isLoading;
 
-@synthesize userID, token;
-
+int userID;
+NSString* token;
 NSString* secret =@"CGHzlBbVch1VG5bt6c98";
 int curentRequest =NO_REQUEST;
 NSMutableData* webData;
 NSURLConnection *conection;
-NSMutableArray *alboms;
+NSMutableArray *albums;
+NSMutableArray *curentAlbum;
 
--(MITRequest *)initWithUserID:(int) userID andToken:(NSString*)token{
-    self.userID =userID;
-    self.token = token;
+
+-(MITRequest *)initFromNSUserDefaults{
+    
+    token = [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"];
+    userID = [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"];
+    [self getVKJSONList:GET_ALBUMS];
     return self;
 }
 #pragma mark NSURLConnection Delegate Methods
@@ -56,9 +61,9 @@ NSMutableArray *alboms;
     NSArray* responseArray = [allData objectForKey:@"response"];
     for (NSDictionary* diction in responseArray) {
         NSString* title = [diction objectForKey:@"title"];
-        [alboms addObject:title];
+        [albums addObject:title];
     }
-    NSLog(@"%@",alboms);
+    NSLog(@"%@",albums);
 
     
 }
@@ -68,12 +73,7 @@ NSMutableArray *alboms;
 }
 
 
--(MITRequest *)initFromNSUserDefaults{
-    
-    self.token = [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"];
-    self.userID = [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"];
-    return self;
-}
+
 
 //http request with md5 info taken from http://vk.com/dev/api_nohttps
 -(NSString *)md5LinkFormaterWithMetod:(NSString *)method{
@@ -92,22 +92,23 @@ NSMutableArray *alboms;
 }
 //getAlbumList
 -(void)getAlbumList{
+    
     [self getVKJSONList:GET_ALBUMS];
-    alboms = [[NSMutableArray alloc]init];
    
 }
 
 -(void)getVKJSONList:(int)param{
     
-    NSString * getRequest;
+    NSString * parametr;
     switch (param) {
         case GET_ALBUMS:
             curentRequest = GET_ALBUMS;
-            getRequest = @"photos.getAlbums";
+            albums = [[NSMutableArray alloc]init];
+            parametr = @"photos.getAlbums";
             break;
         case GET_CURENT_PHOTO:
             curentRequest = GET_CURENT_PHOTO;
-            getRequest = @"photos.getAlbums";
+            parametr = @"photos.getAlbums";
             break;
         default:
             NSLog(@"Unknown param");
@@ -115,12 +116,11 @@ NSMutableArray *alboms;
             break;
     }
 
-    NSString *link = [self getLinkWithParameter:getRequest];
+    NSString *link = [self getLinkWithParameter:parametr];
     NSLog(@"%@",link);
     NSURL *url = [NSURL URLWithString:link];
     NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
     NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request  delegate:self];
-   // NSData *responseData = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
     if(conn){
         NSLog(@"connect is live");
     }

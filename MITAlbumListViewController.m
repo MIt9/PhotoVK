@@ -7,6 +7,7 @@
 //
 
 #import "MITAlbumListViewController.h"
+#import "MITPhotoAlbom.h"
 
 @interface MITAlbumListViewController ()
 
@@ -28,10 +29,10 @@
 {
     [super viewDidLoad];
     
-    if (vkRequest.token != nil) {
-        NSLog(@"Table view taken is: %@",[vkRequest token]);
-        [vkRequest getAlbumList];
-    }
+//    if ([vkRequest token] != nil) {
+//        NSLog(@"Table view taken is: %@",[vkRequest token]);
+//        [vkRequest getAlbumList];
+//    }
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -52,21 +53,24 @@
 {
 #warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
 #warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    NSLog(@"%@", [vkRequest albums]);
+    return [[vkRequest albums]count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
+    static NSString *CellIdentifier = @"AlbumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
+    MITPhotoAlbom * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
+    [cell.textLabel setText:[currentAlbom title]];
     // Configure the cell...
     
     return cell;

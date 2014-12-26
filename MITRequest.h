@@ -10,10 +10,9 @@
 #import "StringBetween.h"
 
 @interface MITRequest : NSObject<NSURLConnectionDataDelegate, NSURLConnectionDelegate>
-@property(nonatomic) int userID;
-@property(nonatomic, strong) NSString* token;
+@property(nonatomic, strong) NSMutableArray *albums;
+@property(nonatomic)BOOL isLoading;
 
--(MITRequest *)initWithUserID:(int) userID andToken:(NSString*)token;
 -(MITRequest *)initFromNSUserDefaults;
 -(NSString *)md5LinkFormaterWithMetod:(NSString *)method;
 -(NSString *)getLinkWithParameter:(NSString *)parametr;

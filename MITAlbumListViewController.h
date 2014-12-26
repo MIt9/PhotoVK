@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "MITRequest.h"
 
-@interface MITAlbumListViewController : UITableViewController<UITableViewDelegate, UITableViewDataSource, NSURLConnectionDelegate>
+@interface MITAlbumListViewController : UITableViewController<UITableViewDelegate, UITableViewDataSource>
 
 @property (nonatomic, strong) MITRequest * vkRequest;
 @end
