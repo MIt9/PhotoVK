@@ -12,7 +12,6 @@
 @interface MITViewController : UIViewController<UIWebViewDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWebView *authView;
-@property (nonatomic) BOOL isAuth;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *indicator;
 
 @property (nonatomic, retain) NSString *secret;

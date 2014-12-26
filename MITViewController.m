@@ -16,7 +16,7 @@
 
 @implementation MITViewController
 
-@synthesize authView, indicator, secret, isAuth, logOutButton;
+@synthesize authView, indicator, secret, logOutButton;
 
 MITRequest *vkRequst;
 
@@ -27,7 +27,7 @@ MITRequest *vkRequst;
     authView.hidden = YES;
     indicator.hidden = YES;
 
-    [self isLogin];
+
     
     
 }
@@ -56,9 +56,6 @@ MITRequest *vkRequst;
     
     
 }
--(void)viewDidAppear:(BOOL)animated{
-    [self isAuth];
-}
 
     
 
@@ -67,6 +64,7 @@ MITRequest *vkRequst;
 {
     if ([[segue identifier] isEqualToString:@"toAlbumList"])
     {
+        NSLog(@"inside array: %@", [vkRequst albums]);
         MITAlbumListViewController* albumList = [segue destinationViewController];
         [albumList setVkRequest:vkRequst];
         
@@ -74,27 +72,15 @@ MITRequest *vkRequst;
     }
 }
 
-- (void)isLogin{
-    if([[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessToken"] == 0){
-        isAuth = NO;
-        logOutButton.hidden = YES;
-    }else{
-        vkRequst = [[MITRequest alloc]initFromNSUserDefaults];
-        logOutButton.hidden = NO;
-
-    }
-}
 
 - (IBAction)login:(id)sender {
    
-    if (isAuth == NO) {
+
         indicator.hidden = NO;
         [indicator startAnimating];
         [self linkFormAndRequestWithAppId:@"4683729" andScope:@"photos"];
         authView.hidden = NO;
-    }else{
-        [self performSegueWithIdentifier:@"toAlbumList" sender:self];
-    }
+
     NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
     NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
 
@@ -102,7 +88,7 @@ MITRequest *vkRequst;
 
 - (IBAction)logOut:(id)sender {
     [self logOutRequest];
-    isAuth = NO;
+
     logOutButton.hidden = YES;
 }
 -(void)logInRequest:(UIWebView *)webView{
@@ -123,7 +109,7 @@ MITRequest *vkRequst;
             //[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"VKAccessTokenDate"];
             [[NSUserDefaults standardUserDefaults] synchronize];
             
-            [self sendSuccessWithMessage:@"Login fine"];
+            //[self sendSuccessWithMessage:@"Login fine"];
      
             vkRequst = [[MITRequest alloc]initFromNSUserDefaults];
         }
@@ -135,7 +121,10 @@ MITRequest *vkRequst;
         webView.hidden = YES;
         logOutButton.hidden = NO;
         //Go to next screen AlbumList
+        
         [self performSegueWithIdentifier:@"toAlbumList" sender:self];
+        
+    
         
     } else if ([webView.request.URL.absoluteString rangeOfString:@"error"].location != NSNotFound) {
         NSLog(@"Error: %@", webView.request.URL.absoluteString);

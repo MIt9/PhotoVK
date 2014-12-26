@@ -7,12 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "MITThumbnail.h"
+@interface MITPhotoAlbom : MITThumbnail
 
-@interface MITPhotoAlbom : NSObject
-
-@property (nonatomic,strong)NSString* title;
-@property (nonatomic,strong)NSString* detail;
-@property (nonatomic,strong)NSString* fileName;
-@property (nonatomic,strong)NSString* icon;
+@property (nonatomic,strong)NSNumber* aid;
 
 @end

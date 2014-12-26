@@ -28,7 +28,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    [vkRequest setAlbumId:self];
+    //add observer hwo listen did album array loaded
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadArray)
+                                                 name:@"AlbumIsLoading"
+                                               object:nil];
 //    if ([vkRequest token] != nil) {
 //        NSLog(@"Table view taken is: %@",[vkRequest token]);
 //        [vkRequest getAlbumList];
@@ -40,7 +45,18 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+- (void)viewDidUnload
+{
+    // отменяем "прослушку"
+    [[NSNotificationCenter defaultCenter] removeObserver:vkRequest];
+    
+    [super viewDidUnload];
+}
+- (void)reloadArray{
+    NSLog(@"DataReloadet");
+    [self.tableView reloadData];
 
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -51,17 +67,15 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    NSLog(@"%@", [vkRequest albums]);
-    return [[vkRequest albums]count];
+
+    return [vkRequest.albums count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -70,7 +84,10 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
     
     MITPhotoAlbom * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
-    [cell.textLabel setText:[currentAlbom title]];
+
+        [cell.textLabel setText:[currentAlbom title]];
+
+    
     // Configure the cell...
     
     return cell;

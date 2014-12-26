@@ -10,6 +10,6 @@
 
 @implementation MITPhotoAlbom
 
-@synthesize title, detail, fileName, icon;
+@synthesize aid;
 
 @end

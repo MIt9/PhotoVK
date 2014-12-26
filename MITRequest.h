@@ -11,10 +11,10 @@
 
 @interface MITRequest : NSObject<NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 @property(nonatomic, strong) NSMutableArray *albums;
-@property(nonatomic)BOOL isLoading;
+@property(nonatomic) id albumId;
 
 -(MITRequest *)initFromNSUserDefaults;
 -(NSString *)md5LinkFormaterWithMetod:(NSString *)method;
--(NSString *)getLinkWithParameter:(NSString *)parametr;
+-(NSString *)getLinkWithParameter:(NSString *)parametr withCovers:(BOOL) covers;
 -(void)getAlbumList;
 @end
