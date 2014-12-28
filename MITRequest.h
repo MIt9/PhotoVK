@@ -11,7 +11,7 @@
 
 @interface MITRequest : NSObject<NSURLConnectionDataDelegate, NSURLConnectionDelegate>
 @property(nonatomic, strong) NSMutableArray *albums;
-@property(nonatomic) id albumId;
+@property(nonatomic) id albumsTableId;
 
 -(MITRequest *)initFromNSUserDefaults;
 -(NSString *)md5LinkFormaterWithMetod:(NSString *)method;

@@ -9,15 +9,16 @@
 #import <Foundation/Foundation.h>
 
 @interface MITThumbnail : NSObject{
-    UIImage* m_image;
+    UIImage* m_thumbnail;
 }
 
 @property (nonatomic, copy) NSString* title;
 @property (nonatomic, copy) NSURL* thumbnailURL;
-@property (nonatomic, readonly) UIImage* image;
+@property (nonatomic, readonly) UIImage* thumbnail;
+@property (nonatomic, strong) NSString* linkTo;
 
--(id) initWithName:(NSString*)title;
--(id) initWithName:(NSString *)title thumbnailURL:(NSURL*)thumbnailURL;
+-(id) initWithTitle:(NSString*)title;
+-(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL;
 
 -(void) loadThumbnail;
 

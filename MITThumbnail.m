@@ -10,31 +10,30 @@
 
 @implementation MITThumbnail
 
-@synthesize title;
-@synthesize thumbnailURL;
+@synthesize title, thumbnailURL, linkTo;
 
--(UIImage*) image {
-    return m_image;
+-(UIImage*) thumbnail {
+    return m_thumbnail;
 }
 
--(id) initWithName:(NSString*)title {
-    return [self initWithName:title thumbnailURL:nil];
+-(id) initWithTitle:(NSString*)title {
+    return [self initWithTitle:title thumbnailURL:nil];
 }
 
--(id) initWithName:(NSString *)title thumbnailURL:(NSURL*)thumbnailURL {
+-(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL {
     self = [super init];
     self.title = title;
-    self.thumbnailURL = thumbnailURL;
+    self.thumbnailURL = [NSURL URLWithString:[thumbnailURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     return self;
 }
 
--(void) loadThumbnail:(id) observer {
+-(void) loadThumbnail{
     // запускам загружаться изображение асинхронно
-    [self performSelectorInBackground:@selector(loadImageInBackground:)
+    [self performSelectorInBackground:@selector(loadThumbnailInBackground)
                            withObject:nil];
 }
 
--(void) loadThumbnailInBackground:(id) observer{
+-(void) loadThumbnailInBackground {
 
     
     // готовим и выполняем запрос
@@ -46,12 +45,13 @@
     
     if ( error == nil ) {
         //изображение загрузилось
-        m_image = [UIImage imageWithData:data];
+        
+        m_thumbnail = [UIImage imageWithData:data] ;
         
         // сообщаем, что изображение загрузилось
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"ThumbnailIsLoading"
-         object:observer];
+         postNotificationName:@"imageLoadet"
+         object:self];
     }
     
 

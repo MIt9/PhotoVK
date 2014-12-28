@@ -80,14 +80,17 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" id="xjl-JU-eTd">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" id="xjl-JU-eTd">
                                 <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="320" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <connections>
+                                    <segue destination="TNF-2a-Kwd" kind="push" identifier="toSelectedAlbum" id="Fep-Rv-ktg"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -100,6 +103,66 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZHR-rb-WRy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="806" y="209"/>
+        </scene>
+        <!--Photos View Controller-->
+        <scene sceneID="mJC-F3-FeI">
+            <objects>
+                <tableViewController id="TNF-2a-Kwd" customClass="MITPhotosViewController" sceneMemberID="viewController">
+                    <tableView key="view" opaque="NO" clipsSubviews="YES" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="Sb9-zy-vLv">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PhotoCell" id="I0W-8e-Kiq">
+                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                </view>
+                                <connections>
+                                    <segue destination="OWR-so-Psh" kind="push" identifier="toPhotoViewer" id="Xsv-b8-8IT"/>
+                                </connections>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="TNF-2a-Kwd" id="lJr-Y1-7bZ"/>
+                            <outlet property="delegate" destination="TNF-2a-Kwd" id="kko-NX-VCb"/>
+                        </connections>
+                    </tableView>
+                    <navigationItem key="navigationItem" id="UjM-6x-7x0"/>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KRE-EC-jS4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1210" y="209"/>
+        </scene>
+        <!--View Photo Controller-->
+        <scene sceneID="3DS-EV-FVd">
+            <objects>
+                <viewController id="OWR-so-Psh" customClass="MITViewPhotoController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="VE3-1Q-zBD">
+                        <rect key="frame" x="0.0" y="64" width="320" height="504"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Onu-oO-lEZ"/>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Onu-oO-lEZ" firstAttribute="leading" secondItem="VE3-1Q-zBD" secondAttribute="leading" type="default" id="Fy2-Lr-peL"/>
+                            <constraint firstItem="Onu-oO-lEZ" firstAttribute="top" secondItem="VE3-1Q-zBD" secondAttribute="top" type="default" id="Pny-OE-9jU"/>
+                            <constraint firstItem="Onu-oO-lEZ" firstAttribute="bottom" secondItem="VE3-1Q-zBD" secondAttribute="bottom" type="default" id="cw1-m3-2qK"/>
+                            <constraint firstItem="Onu-oO-lEZ" firstAttribute="trailing" secondItem="VE3-1Q-zBD" secondAttribute="trailing" type="default" id="u4v-yV-0Sw"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="dga-lJ-cbu"/>
+                    <connections>
+                        <outlet property="photoView" destination="Onu-oO-lEZ" id="DmL-qI-edc"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h9Z-HR-xLt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1651" y="209"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="wvv-d6-fsY">
@@ -124,6 +187,9 @@
         <class className="MITAlbumListViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumListViewController.h"/>
         </class>
+        <class className="MITPhotosViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITPhotosViewController.h"/>
+        </class>
         <class className="MITViewController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewController.h"/>
             <relationships>
@@ -132,6 +198,12 @@
                 <relationship kind="outlet" name="authView" candidateClass="UIWebView"/>
                 <relationship kind="outlet" name="indicator" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="logOutButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="MITViewPhotoController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewPhotoController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="photoView" candidateClass="UIImageView"/>
             </relationships>
         </class>
         <class className="NSLayoutConstraint" superclassName="NSObject">

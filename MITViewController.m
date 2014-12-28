@@ -18,7 +18,7 @@
 
 @synthesize authView, indicator, secret, logOutButton;
 
-MITRequest *vkRequst;
+MITRequest *vkRequest;
 
 - (void)viewDidLoad
 {
@@ -64,9 +64,9 @@ MITRequest *vkRequst;
 {
     if ([[segue identifier] isEqualToString:@"toAlbumList"])
     {
-        NSLog(@"inside array: %@", [vkRequst albums]);
+        NSLog(@"inside array: %@", [vkRequest albums]);
         MITAlbumListViewController* albumList = [segue destinationViewController];
-        [albumList setVkRequest:vkRequst];
+        [albumList setVkRequest:vkRequest];
         
         
     }
@@ -111,7 +111,7 @@ MITRequest *vkRequst;
             
             //[self sendSuccessWithMessage:@"Login fine"];
      
-            vkRequst = [[MITRequest alloc]initFromNSUserDefaults];
+            vkRequest = [[MITRequest alloc]initFromNSUserDefaults];
         }
         
 

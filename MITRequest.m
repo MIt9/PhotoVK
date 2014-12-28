@@ -8,14 +8,19 @@
 
 #define NO_REQUEST -1
 #define GET_ALBUMS 1
-#define GET_CURENT_PHOTO 2
+#define GET_CURRENT_PHOTO 2
+#define GET_CURRENT_ALBUM 3
+
+#define ALL_ALBUMS @"photos.getAlbums"
+#define CURRENT_ALBUM @"photos.get"
+#define NEED_COVERS @"need_covers=1"
 
 #import "MITRequest.h"
-#import "MITPhotoAlbom.h"
+#import "MITPhotoAlbum.h"
 #import "StringBetween.h"
 
 @implementation MITRequest
-@synthesize albumId,albums;
+@synthesize albumsTableId,albums;
 
 int userID;
 NSString* token;
@@ -58,25 +63,57 @@ NSMutableArray *curentAlbum;
     NSString* link =[NSString stringWithFormat:@"https://api.vk.com%@",getRequest];
     return link;
 }
-//getAlbumList
--(void)getAlbumList{
+
+//Format link with parameter and three metods
+-(NSString *)getLinkWithParameter:(NSString *)parametr methodOne:(NSString *)mOne methodTwo:(NSString *)mTwo methodThree:(NSString *)mThree{
+    NSMutableString* base = [NSMutableString stringWithString:@"https://api.vk.com/method/"];
+    [base appendString:parametr];
+    [base appendString:@"?"];
+    if (mOne != nil) {
+        [base appendString:mOne];
+        [base appendString:@"&"];
+    }
+    if (mTwo != nil) {
+        [base appendString:mTwo];
+        [base appendString:@"&"];
+    }
+    if (mThree != nil) {
+        [base appendString:mThree];
+        [base appendString:@"&"];
+    }
     
-    [self getVKJSONList:GET_ALBUMS];
-   
+    NSString* uid = [NSString stringWithFormat:@"uid=%i&",userID];
+    [base appendString:uid];
+    NSString* aToken = [NSString stringWithFormat:@"access_token=%@",token];
+    [base appendString:aToken];
+    return [NSString stringWithFormat:@"%@",base];
 }
 
--(void)getVKJSONList:(int)param{
+// Get link for all album
+-(void)getAlbumList{
+
+    [self getVKJSONList:GET_ALBUMS otherInfo:nil];
+
+}
+
+-(void)getCurrentAlbum:(NSString *)idAlbum{
+    [self getVKJSONList:GET_CURRENT_ALBUM otherInfo:idAlbum];
+}
+
+-(void)getVKJSONList:(int)param otherInfo:(NSString *)info{
     
-    NSString * parametr;
+    NSString* tmp;
+    NSString *link;
     switch (param) {
         case GET_ALBUMS:
             curentRequest = GET_ALBUMS;
             albums = [[NSMutableArray alloc]init];
-            parametr = @"photos.getAlbums";
+            link = [self getLinkWithParameter:ALL_ALBUMS methodOne:NEED_COVERS methodTwo:nil methodThree:nil];
             break;
-        case GET_CURENT_PHOTO:
-            curentRequest = GET_CURENT_PHOTO;
-            parametr = @"photos.getAlbums";
+        case GET_CURRENT_ALBUM:
+            curentRequest = GET_CURRENT_ALBUM;
+            tmp = [NSString stringWithFormat:@"album_id=%@",info] ;
+            link = [self getLinkWithParameter:CURRENT_ALBUM methodOne:NEED_COVERS methodTwo:tmp methodThree:nil];
             break;
         default:
             NSLog(@"Unknown param");
@@ -84,22 +121,14 @@ NSMutableArray *curentAlbum;
             break;
     }
 
-    NSString *link = [self getLinkWithParameter:parametr withCovers:YES];
+    
     NSLog(@"%@",link);
-//    NSURL *url = [NSURL URLWithString:link];
-//    NSURLRequest *request = [[NSURLRequest alloc] initWithURL:url];
-//    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request  delegate:self];
+
     NSURLRequest *request =
     [NSURLRequest requestWithURL:[NSURL URLWithString:link]];
     
     // send the async request (note that the completion block will be called on the main thread)
-    //
-    // note: using the block-based "sendAsynchronousRequest" is preferred, and useful for
-    // small data transfers that are likely to succeed. If you doing large data transfers,
-    // consider using the NSURLConnectionDelegate-based APIs.
-    //
     [NSURLConnection sendAsynchronousRequest:request
-     // the NSOperationQueue upon which the handler block will be dispatched:
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
                                
@@ -118,25 +147,14 @@ NSMutableArray *curentAlbum;
                                    if ((([httpResponse statusCode]/100) == 2)) {
                                        
                                        // Update the UI and start parsing the data,
-                                       // Spawn an NSOperation to parse the earthquake data so that the UI is not
-                                       // blocked while the application parses the XML data.
-                                       //
                                        NSDictionary* allData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
-                                       
-                                       NSArray* responseArray = [allData objectForKey:@"response"];
-                                       for (NSDictionary* diction in responseArray) {
-                                           NSString* title = [diction objectForKey:@"title"];
-                                           MITPhotoAlbom* cAlbum =[[MITPhotoAlbom alloc]init];
-                                           cAlbum.title = title;
-                                           [albums addObject:cAlbum];
-                                           
+                                       if (curentRequest == GET_ALBUMS) {
+                                           [self albumsParsing:allData];
+                                           curentRequest = NO_REQUEST;
                                        }
-                                       NSLog(@"after all %@",albums);
-                                       [[NSNotificationCenter defaultCenter]
-                                        postNotificationName:@"AlbumIsLoading"
-                                        object:albumId];
-                                   }
-                                   else {
+                                   
+                                                                         
+                                   }else {
                                        NSString *errorString =
                                        NSLocalizedString(@"HTTP Error", @"Error message displayed when receving a connection error.");
                                        NSDictionary *userInfo = @{NSLocalizedDescriptionKey : errorString};
@@ -147,10 +165,33 @@ NSMutableArray *curentAlbum;
                                    }
                                }
                            }];
+
+}
+-(void)albumsParsing:(NSDictionary*) allData{
     
-//    if(conn){
-//        NSLog(@"connect is live");
-//    }
+    NSArray* responseArray = [allData objectForKey:@"response"];
+    for (NSDictionary* diction in responseArray) {
+        NSNumber* aid = [diction objectForKey:@"aid"];
+        NSString* title = [diction objectForKey:@"title"];
+        NSString* linkThumbSrc = [diction objectForKey:@"thumb_src"];
+//        NSURL* thumbSrc = [NSURL URLWithString:[linkThumbSrc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSString* link = [self getLinkWithParameter:CURRENT_ALBUM methodOne:NEED_COVERS methodTwo:[NSString stringWithFormat:@"album_id=%@",aid] methodThree:nil];
+                          
+        MITPhotoAlbum* cAlbum =[[MITPhotoAlbum alloc]initWithTitle:title
+                                                      thumbnailURL:linkThumbSrc
+                                                               aid:aid
+                                           requestLinkforPhotoList:link];
+        [cAlbum loadPhotosArray];
+        [albums addObject:cAlbum];
+        
+        
+    }
+    NSLog(@"after all %@",albums);
+    [[NSNotificationCenter defaultCenter]
+     postNotificationName:@"AlbumIsLoading"
+     object:albumsTableId];
+    
+
 }
 - (void)handleError:(NSError *)error {
     

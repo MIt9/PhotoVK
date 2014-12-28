@@ -1,20 +1,21 @@
 //
-//  AlbumListViewController.m
-//  PhotoViewerVK
+//  MITPhotosViewControlerViewController.m
+//  PhotoVK
 //
-//  Created by dmitii bilukha on 12/21/14.
-//  Copyright (c) 2014 Dmitii Bilukha. All rights reserved.
+//  Created by Dmitrii Bilukha on 12/27/14.
+//  Copyright (c) 2014 Dmitrii Bilukha. All rights reserved.
 //
 
-#import "MITAlbumListViewController.h"
-#import "MITPhotoAlbum.h"
 #import "MITPhotosViewController.h"
-@interface MITAlbumListViewController ()
+#import "MITViewPhotoController.h"
+
+@interface MITPhotosViewController ()
 
 @end
 
-@implementation MITAlbumListViewController
-@synthesize vkRequest;
+@implementation MITPhotosViewController
+
+@synthesize vkRequest, curentAlbum;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -28,28 +29,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [vkRequest setAlbumsTableId:self];
-    //add observer hwo listen did album array loaded
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadArray)
-                                                 name:@"AlbumIsLoading"
-                                               object:nil];
-    
+    self.title = curentAlbum.title;
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoadedNotification:)
                                                  name:@"imageLoadet" object:nil];
-
+    
 }
 - (void)viewDidUnload
 {
     // отменяем "прослушку"
-    [[NSNotificationCenter defaultCenter] removeObserver:vkRequest];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];
 }
 
-// "слушаем" notification
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Dispose of any resources that can be recreated.
+}
+
 -(void) imageLoadedNotification:(NSNotification*)notification {
     // если не пришла страна,
     // для которой загрузился флаг - ничего не делаем
@@ -57,19 +56,19 @@
         return;
     
     // достаем страну, для которой загрузился флаг
-    MITPhotoAlbum* album = (MITPhotoAlbum*)notification.object;
+    MITPhoto* photo = (MITPhoto*)notification.object;
     
     // помечаем переменную, чтобы мы ее могли изменить в блоке
     __block NSIndexPath* indexPath = nil;
     
     // перебираем массив со странами и ищем ту,
     // для которой загрузился флаг
-    [[vkRequest albums]
+    [[curentAlbum photos]
      enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
          // здесь мы сравниваем адрес объекта!
          // т.к. они берутся из одной коллекции - этого достаточно
-         if ( obj == album ) {
+         if ( obj == photo ) {
              // нашли! запомним положение в tableView
              indexPath
              = [NSIndexPath indexPathForRow:idx inSection:0];
@@ -83,39 +82,28 @@
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
         });
-
+        
     }
 }
 
-- (void)reloadArray{
-    NSLog(@"DataReloadet");
-    [self.tableView reloadData];
-
-}
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if ([[segue identifier] isEqualToString:@"toSelectedAlbum"])
+    if ([[segue identifier] isEqualToString:@"toPhotoViewer"])
     {
-
-        MITPhotosViewController* selectedAlbum = [segue destinationViewController];
-        NSIndexPath* path = [self.tableView indexPathForSelectedRow];
-        MITPhotoAlbum* currentAlbum = [[vkRequest albums] objectAtIndex:[path row]];
-        [selectedAlbum setCurentAlbum:currentAlbum];
-        [selectedAlbum setVkRequest:vkRequest];
         
+        MITViewPhotoController* vpc = [segue destinationViewController];
+        NSIndexPath* path = [self.tableView indexPathForSelectedRow];
+        MITPhoto* currentPhoto = [[curentAlbum photos] objectAtIndex:[path row]];
+        [vpc setCurrentPhoto:currentPhoto];
         
     }
-}
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+
     // Return the number of sections.
     return 1;
 }
@@ -123,33 +111,32 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-
-    return [vkRequest.albums count];
+    return [curentAlbum.photos count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"AlbumCell";
+    static NSString *CellIdentifier = @"PhotoCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-
-    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
-        
-        [cell.textLabel setText:[currentAlbom title]];
     
-    if ( currentAlbom.thumbnail == nil )
-        [currentAlbom loadThumbnail];
+    MITPhoto* photo = [[curentAlbum photos] objectAtIndex:indexPath.row];
+    
+    [cell.textLabel setText:[photo title]];
+    
+    if ( photo.thumbnail == nil )
+        [photo loadThumbnail];
     
     // назначим картинку
-    cell.imageView.image = currentAlbom.thumbnail;
+    cell.imageView.image = photo.thumbnail;
     
     
     
     
     
-//        NSData *data = [NSData dataWithContentsOfURL:currentAlbom.thumbnailURL];
-//        UIImage* image = [[UIImage alloc] initWithData:data];
-//    
-//        cell.imageView.image = image;
+//    NSData *data = [NSData dataWithContentsOfURL:photo.thumbnailURL];
+//    UIImage* image = [[UIImage alloc] initWithData:data];
+    
+//    cell.imageView.image = image;
     // Configure the cell...
     
     return cell;
