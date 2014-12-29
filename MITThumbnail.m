@@ -10,7 +10,7 @@
 
 @implementation MITThumbnail
 
-@synthesize title, thumbnailURL, linkTo, cropImg;
+@synthesize title, thumbnailURL, linkTo;
 
 -(UIImage*) thumbnail {
     return m_thumbnail;
@@ -27,8 +27,8 @@
     return self;
 }
 
+// loading thumbnail in background
 -(void) loadThumbnail{
-    // запускам загружаться изображение асинхронно
     [self performSelectorInBackground:@selector(loadThumbnailInBackground)
                            withObject:nil];
 }
@@ -36,7 +36,6 @@
 -(void) loadThumbnailInBackground {
 
     
-    // готовим и выполняем запрос
     NSURLRequest* request = [NSURLRequest requestWithURL:self.thumbnailURL];
     NSError* error = nil;
     NSData* data =
@@ -44,13 +43,13 @@
                           returningResponse:nil error:&error];
     
     if ( error == nil ) {
-        //изображение загрузилось
+        //image loading
         
         m_thumbnail = [UIImage imageWithData:data] ;
         
-        // сообщаем, что изображение загрузилось
+        // send notification image loaded
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"imageLoadet"
+         postNotificationName:@"imageLoaded"
          object:self];
     }
     

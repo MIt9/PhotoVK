@@ -15,7 +15,6 @@
 @property (nonatomic, copy) NSString* title;
 @property (nonatomic, copy) NSURL* thumbnailURL;
 @property (nonatomic, readonly) UIImage* thumbnail;
-@property (nonatomic, readonly) UIImage* cropImg;
 @property (nonatomic, strong) NSString* linkTo;
 
 -(id) initWithTitle:(NSString*)title;

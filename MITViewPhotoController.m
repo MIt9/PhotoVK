@@ -14,7 +14,7 @@
 
 @implementation MITViewPhotoController
 
-@synthesize photoView, currentPhoto, loading;
+@synthesize photoView, currentPhoto, isLoading;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -30,9 +30,10 @@
 {
     [super viewDidLoad];
     self.title = currentPhoto.title;
-    [loading startAnimating];
+    [isLoading startAnimating];
     self.photoView.contentMode = UIViewContentModeScaleAspectFill;
     NSString* link;
+    //find link to biggest picture
     if (currentPhoto.src_xxbig != nil) {
         link = currentPhoto.src_xxbig;
     }else if (currentPhoto.src_xbig != nil){
@@ -40,11 +41,11 @@
     }else if (currentPhoto.src_big != nil){
         link = currentPhoto.src_big;
     }
-
+    //loading image and show it in full screen
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:link]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         self.photoView.image = [UIImage imageWithData:data];
-        [loading stopAnimating];
-        loading.hidden = YES;
+        [isLoading stopAnimating];
+        isLoading.hidden = YES;
     }];
     
     //[self.photoView setImage:image];

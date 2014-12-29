@@ -6,15 +6,18 @@
 //  Copyright (c) 2014 Dmitrii Bilukha. All rights reserved.
 //
 
-#import "MITViewController.h"
+#define APP_ID @"4683729"
+#define SCOPE  @"photos"
+
+#import "MITLoginViewController.h"
 #import "MITRequest.h"
 #import "MITAlbumListViewController.h"
 
-@interface MITViewController ()
+@interface MITLoginViewController ()
 
 @end
 
-@implementation MITViewController
+@implementation MITLoginViewController
 
 @synthesize authView, indicator, secret, logOutButton;
 
@@ -26,13 +29,9 @@ MITRequest *vkRequest;
     self.view.backgroundColor = [UIColor colorWithPatternImage:[UIImage imageNamed:@"loginBG.png"]];
     authView.hidden = YES;
     indicator.hidden = YES;
-
-
-    
-    
 }
 
-// making http request for autorithation
+// making http request for authorization
 - (void)linkFormAndRequestWithAppId:(NSString *)appID andScope:(NSString *)scope{
     NSString *authLink = [NSString stringWithFormat:@"http://api.vk.com/oauth/authorize?client_id=%@&scope=%@&redirect_uri=http://api.vk.com/blank.html&display=touch&response_type=token", appID, scope];
     NSURL *url = [NSURL URLWithString:authLink];
@@ -41,6 +40,7 @@ MITRequest *vkRequest;
     [authView loadRequest:authRequest];
     [authView setDelegate:self];  
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -53,8 +53,7 @@ MITRequest *vkRequest;
     [indicator stopAnimating];
     indicator.hidden = YES;
     [self logInRequest:webView];
-    
-    
+
 }
 
     
@@ -72,13 +71,13 @@ MITRequest *vkRequest;
     }
 }
 
-
+//Action on pressing button login
 - (IBAction)login:(id)sender {
    
 
         indicator.hidden = NO;
         [indicator startAnimating];
-        [self linkFormAndRequestWithAppId:@"4683729" andScope:@"photos"];
+        [self linkFormAndRequestWithAppId:APP_ID andScope:SCOPE];
         authView.hidden = NO;
 
     NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
@@ -91,6 +90,8 @@ MITRequest *vkRequest;
 
     logOutButton.hidden = YES;
 }
+
+//make request for authorization. Save user Id and token to default
 -(void)logInRequest:(UIWebView *)webView{
     if ([webView.request.URL.absoluteString rangeOfString:@"access_token"].location != NSNotFound) {
         
@@ -106,11 +107,7 @@ MITRequest *vkRequest;
         
         if(accessToken){
             [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"VKAccessToken"];
-            //[[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:@"VKAccessTokenDate"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            
-            //[self sendSuccessWithMessage:@"Login fine"];
-     
             vkRequest = [[MITRequest alloc]initFromNSUserDefaults];
         }
         
@@ -134,7 +131,7 @@ MITRequest *vkRequest;
     
     
 }
-//logOut request
+//logOut request. Delete all cookie and user defaults
 -(void)logOutRequest{
     // Delate all cookie
     NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
@@ -147,9 +144,9 @@ MITRequest *vkRequest;
         [[NSUserDefaults standardUserDefaults] synchronize];
         
         
-        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
-        NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
-        
+//        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
+//        NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
+    
         
         [self sendSuccessWithMessage:@"You logout fine!"];
     

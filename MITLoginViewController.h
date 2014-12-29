@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "StringBetween.h"
 
-@interface MITViewController : UIViewController<UIWebViewDelegate>
+@interface MITLoginViewController : UIViewController<UIWebViewDelegate>
 
 @property (nonatomic, retain) IBOutlet UIWebView *authView;
 @property (nonatomic, retain) IBOutlet UIActivityIndicatorView *indicator;

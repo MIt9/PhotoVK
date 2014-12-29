@@ -4,10 +4,10 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--View Controller - Welcome-->
+        <!--Login View Controller - Welcome-->
         <scene sceneID="5">
             <objects>
-                <viewController id="2" customClass="MITViewController" sceneMemberID="viewController">
+                <viewController id="2" customClass="MITLoginViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3">
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -232,6 +232,34 @@
             <point key="canvasLocation" x="-54" y="209"/>
         </scene>
     </scenes>
+    <classes>
+        <class className="MITAlbumListViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumListViewController.h"/>
+        </class>
+        <class className="MITLoginViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITLoginViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="logOut:"/>
+                <relationship kind="action" name="login:"/>
+                <relationship kind="outlet" name="authView" candidateClass="UIWebView"/>
+                <relationship kind="outlet" name="indicator" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="logOutButton" candidateClass="UIButton"/>
+            </relationships>
+        </class>
+        <class className="MITPhotosViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITPhotosViewController.h"/>
+        </class>
+        <class className="MITViewPhotoController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewPhotoController.h"/>
+            <relationships>
+                <relationship kind="outlet" name="loading" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="photoView" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
+        <class className="NSLayoutConstraint" superclassName="NSObject">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

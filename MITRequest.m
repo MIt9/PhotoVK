@@ -14,6 +14,7 @@
 #define ALL_ALBUMS @"photos.getAlbums"
 #define CURRENT_ALBUM @"photos.get"
 #define NEED_COVERS @"need_covers=1"
+#define SECRET @"CGHzlBbVch1VG5bt6c98"
 
 #import "MITRequest.h"
 #import "MITPhotoAlbum.h"
@@ -24,7 +25,7 @@
 
 int userID;
 NSString* token;
-NSString* secret =@"CGHzlBbVch1VG5bt6c98";
+//NSString* secret =@"CGHzlBbVch1VG5bt6c98";
 int curentRequest =NO_REQUEST;
 NSMutableData* webData;
 NSURLConnection *conection;
@@ -44,27 +45,28 @@ NSMutableArray *curentAlbum;
 //http request with md5 info taken from http://vk.com/dev/api_nohttps
 -(NSString *)md5LinkFormaterWithMetod:(NSString *)method{
     
-    NSString* getRequest =[NSString stringWithFormat:@"/method/%@?uid=%i&access_token=%@",method, userID, token];
-    NSString* requestString =[NSString stringWithFormat:@"%@%@",getRequest,secret];
+    NSString* getRequest =[NSString stringWithFormat:@"/method/%@?uid=%id&access_token=%@",method, userID, token];
+    NSString* requestString =[NSString stringWithFormat:@"%@%@",getRequest,SECRET];
     NSString* md5 = [NSString md5String:requestString]; 
     NSString* link =[NSString stringWithFormat:@"https://api.vk.com%@&sig=%@",getRequest,md5];
     
     return link;
 }
+//Formatting string with one parameter and cover
 -(NSString *)getLinkWithParameter:(NSString *)parametr withCovers:(BOOL) covers{
-    NSString* metod;
+    NSString* method;
     
     if (covers) {
-        metod = [NSString stringWithFormat:@"%@?need_covers=1&",parametr];
+        method = [NSString stringWithFormat:@"%@?need_covers=1&",parametr];
     }else{
-        metod = [NSString stringWithFormat:@"%@?",parametr];
+        method = [NSString stringWithFormat:@"%@?",parametr];
     }
-    NSString* getRequest =[NSString stringWithFormat:@"/method/%@uid=%i&access_token=%@",metod, userID, token];
+    NSString* getRequest =[NSString stringWithFormat:@"/method/%@uid=%i&access_token=%@",method, userID, token];
     NSString* link =[NSString stringWithFormat:@"https://api.vk.com%@",getRequest];
     return link;
 }
 
-//Format link with parameter and three metods
+//Formatting link with parameter and three methods
 -(NSString *)getLinkWithParameter:(NSString *)parametr methodOne:(NSString *)mOne methodTwo:(NSString *)mTwo methodThree:(NSString *)mThree{
     NSMutableString* base = [NSMutableString stringWithString:@"https://api.vk.com/method/"];
     [base appendString:parametr];
@@ -89,17 +91,19 @@ NSMutableArray *curentAlbum;
     return [NSString stringWithFormat:@"%@",base];
 }
 
-// Get link for all album
+// Get link for all albums
 -(void)getAlbumList{
 
     [self getVKJSONList:GET_ALBUMS otherInfo:nil];
 
 }
 
+// Get current album with its id (now not used)
 -(void)getCurrentAlbum:(NSString *)idAlbum{
     [self getVKJSONList:GET_CURRENT_ALBUM otherInfo:idAlbum];
 }
 
+// Make request and parsing info in main thread
 -(void)getVKJSONList:(int)param otherInfo:(NSString *)info{
     
     NSString* tmp;
@@ -108,12 +112,18 @@ NSMutableArray *curentAlbum;
         case GET_ALBUMS:
             curentRequest = GET_ALBUMS;
             albums = [[NSMutableArray alloc]init];
-            link = [self getLinkWithParameter:ALL_ALBUMS methodOne:NEED_COVERS methodTwo:nil methodThree:nil];
+            link = [self getLinkWithParameter:ALL_ALBUMS
+                                    methodOne:NEED_COVERS
+                                    methodTwo:nil
+                                  methodThree:nil];
             break;
         case GET_CURRENT_ALBUM:
             curentRequest = GET_CURRENT_ALBUM;
             tmp = [NSString stringWithFormat:@"album_id=%@",info] ;
-            link = [self getLinkWithParameter:CURRENT_ALBUM methodOne:NEED_COVERS methodTwo:tmp methodThree:nil];
+            link = [self getLinkWithParameter:CURRENT_ALBUM
+                                    methodOne:NEED_COVERS
+                                    methodTwo:tmp
+                                  methodThree:nil];
             break;
         default:
             NSLog(@"Unknown param");
@@ -167,6 +177,7 @@ NSMutableArray *curentAlbum;
                            }];
 
 }
+//Parsing request
 -(void)albumsParsing:(NSDictionary*) allData{
     
     NSArray* responseArray = [allData objectForKey:@"response"];
@@ -174,23 +185,31 @@ NSMutableArray *curentAlbum;
         NSNumber* aid = [diction objectForKey:@"aid"];
         NSString* title = [diction objectForKey:@"title"];
         NSString* linkThumbSrc = [diction objectForKey:@"thumb_src"];
-//        NSURL* thumbSrc = [NSURL URLWithString:[linkThumbSrc stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        NSString* link = [self getLinkWithParameter:CURRENT_ALBUM methodOne:NEED_COVERS methodTwo:[NSString stringWithFormat:@"album_id=%@",aid] methodThree:nil];
+        //formatting long for load photos to array
+        NSString* link = [self getLinkWithParameter:CURRENT_ALBUM
+                                          methodOne:NEED_COVERS
+                                          methodTwo:[NSString stringWithFormat:@"album_id=%@",aid]
+                                        methodThree:nil];
                           
         MITPhotoAlbum* cAlbum =[[MITPhotoAlbum alloc]initWithTitle:title
                                                       thumbnailURL:linkThumbSrc
                                                                aid:aid
                                            requestLinkforPhotoList:link];
+        
+        //loading current album photos array in background
         [cAlbum loadPhotosArray];
+        //add to albums array
         [albums addObject:cAlbum];
         
         
     }
     NSLog(@"after all %@",albums);
+//    [[NSNotificationCenter defaultCenter]
+//     postNotificationName:@"AlbumIsLoading"
+//     object:albumsTableId];
     [[NSNotificationCenter defaultCenter]
-     postNotificationName:@"AlbumIsLoading"
-     object:albumsTableId];
-    
+     postNotificationName:@"AlbumIsLoaded"
+     object:self];
 
 }
 - (void)handleError:(NSError *)error {
@@ -199,7 +218,11 @@ NSMutableArray *curentAlbum;
     NSString *alertTitle = NSLocalizedString(@"Error", @"Title for alert displayed when download or parse error occurs.");
     NSString *okTitle = NSLocalizedString(@"OK ", @"OK Title for alert displayed when download or parse error occurs.");
     
-    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle message:errorMessage delegate:nil cancelButtonTitle:okTitle otherButtonTitles:nil];
+    UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertTitle
+                                                        message:errorMessage
+                                                       delegate:nil
+                                              cancelButtonTitle:okTitle
+                                              otherButtonTitles:nil];
     [alertView show];
 }
 

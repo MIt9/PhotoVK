@@ -12,7 +12,7 @@
 
 @synthesize pid, width, height, src, src_big, src_xbig, src_xxbig;
 
-
+//init with all vars
 -(id) initWithTitle:(NSString *)_title Pid:(NSNumber*)_pid Width:(NSNumber*)_width Height:(NSNumber*)_height Src:(NSString *)_src Src_big:(NSString *)_src_big Src_xbig:(NSString *)_src_xbig Src_xxbig:(NSString *)_src_xxbig {
     
     self = [super initWithTitle:_title thumbnailURL:_src_big];

@@ -9,6 +9,7 @@
 #import "StringBetween.h"
 
 @implementation NSString (StringBetween)
+//find string between two other string
 - (NSString *)getStringBetweenString:(NSString *)first andString:(NSString *)second {
     NSRange rangeofFirst = [(NSString *)self rangeOfString:first];
     NSRange rangeOfSecond = [(NSString *)self rangeOfString:second];
@@ -20,6 +21,7 @@
                         [[(NSString *)self substringFromIndex:rangeofFirst.location+rangeofFirst.length] rangeOfString:second].location];
     return result;
 }
+//converting string to md5
 + (NSString *) md5String:(NSString*)concat {
     const char *concat_str = [concat UTF8String];
     unsigned char result[CC_MD5_DIGEST_LENGTH];

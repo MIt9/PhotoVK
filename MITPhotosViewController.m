@@ -15,7 +15,7 @@
 
 @implementation MITPhotosViewController
 
-@synthesize vkRequest, curentAlbum;
+@synthesize currentAlbum;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -29,26 +29,28 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.title = curentAlbum.title;
+    self.title = currentAlbum.title;
 
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoadedNotification:)
-                                                 name:@"imageLoadet" object:nil];
+                                                 name:@"imageLoaded"
+                                               object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadArray)
-                                                 name:@"baseLoadet" object:nil];
+                                                 name:@"baseLoaded"
+                                               object:nil];
+    //set cell and row height
     self.tableView.rowHeight =150;
     
 }
 - (void)viewDidUnload
 {
-    // отменяем "прослушку"
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];
 }
 - (void)reloadArray{
-    NSLog(@"DataReloadet");
+    //NSLog(@"DataReloaded");
     [self.tableView reloadData];
     
 }
@@ -58,35 +60,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+// listen notification. if find photo were changed thumbnail and reload it
 -(void) imageLoadedNotification:(NSNotification*)notification {
-    // если не пришла страна,
-    // для которой загрузился флаг - ничего не делаем
     if ( notification.object == nil )
         return;
-    
-    // достаем страну, для которой загрузился флаг
     MITPhoto* photo = (MITPhoto*)notification.object;
-    
-    // помечаем переменную, чтобы мы ее могли изменить в блоке
     __block NSIndexPath* indexPath = nil;
-    
-    // перебираем массив со странами и ищем ту,
-    // для которой загрузился флаг
-    [[curentAlbum photos]
+    [[currentAlbum photos]
      enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
-         // здесь мы сравниваем адрес объекта!
-         // т.к. они берутся из одной коллекции - этого достаточно
          if ( obj == photo ) {
-             // нашли! запомним положение в tableView
-             indexPath
-             = [NSIndexPath indexPathForRow:idx inSection:0];
-             // остановим "перебор"
+             indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
              *stop = YES;
          }
      }];
     
-    // если нашли страну - обновим ячейку, в которой она показывается
     if ( indexPath != nil ) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -102,7 +90,7 @@
         
         MITViewPhotoController* vpc = [segue destinationViewController];
         NSIndexPath* path = [self.tableView indexPathForSelectedRow];
-        MITPhoto* currentPhoto = [[curentAlbum photos] objectAtIndex:[path row]];
+        MITPhoto* currentPhoto = [[currentAlbum photos] objectAtIndex:[path row]];
         [vpc setCurrentPhoto:currentPhoto];
         
     }
@@ -120,7 +108,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     // Return the number of rows in the section.
-    return [curentAlbum.photos count];
+    return [currentAlbum.photos count];
 }
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -131,8 +119,8 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    
-    MITPhoto* photo = [[curentAlbum photos] objectAtIndex:indexPath.row];
+    //customized cell inserting biggest image and indicator
+    MITPhoto* photo = [[currentAlbum photos] objectAtIndex:indexPath.row];
     UIImageView *photoPreview = (UIImageView *)[cell viewWithTag:100];
     UIActivityIndicatorView *actInd = (UIActivityIndicatorView *) [cell viewWithTag:101];
     photoPreview.contentMode = UIViewContentModeScaleAspectFit;

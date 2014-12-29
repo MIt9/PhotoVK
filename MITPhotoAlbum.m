@@ -12,17 +12,18 @@
 
 @synthesize aid, photos;
 
+//init with all vars
 -(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)_aid requestLinkforPhotoList:(NSString*)link{
     
     self = [super initWithTitle:title thumbnailURL:thumbnailURL];
     self.aid = _aid;
     self.linkTo = link;
-    
-//    [self loadPhotoList:observer requestLinkforPhotoList:link];
+
     return self;
 }
+
 -(void) loadPhotosArray{
-    // запускам загружаться изображение асинхронно
+    // parsing and loading photos array in background
     [self performSelectorInBackground:@selector(loadPhotosArrayInBackground)
                            withObject:nil];
 }
@@ -30,7 +31,7 @@
 -(void) loadPhotosArrayInBackground {
     
     
-    // готовим и выполняем запрос
+    
     NSLog(@"link to %@",self.linkTo);
     NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.linkTo]];
     NSError* error = nil;
@@ -39,7 +40,7 @@
                           returningResponse:nil error:&error];
     
     if ( error == nil ) {
-        //изображение загрузилось
+        //parsing
         photos = [[NSMutableArray alloc]init];
         NSDictionary* allData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
         NSArray* responseArray = [allData objectForKey:@"response"];
@@ -59,9 +60,9 @@
             
 
         }
-        //m_thumbnail = [UIImage imageWithData:data] ;
+
         [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"baseLoadet"
+         postNotificationName:@"baseLoaded"
          object:self];
 
     }

@@ -13,7 +13,6 @@
 
 @interface MITPhotosViewController : UITableViewController<UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) MITRequest* vkRequest;
-@property (nonatomic,strong) MITPhotoAlbum* curentAlbum;
+@property (nonatomic,strong) MITPhotoAlbum* currentAlbum;
 
 @end

@@ -33,54 +33,36 @@
     //add observer hwo listen did album array loaded
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadArray)
-                                                 name:@"AlbumIsLoading"
+                                                 name:@"AlbumIsLoaded"
                                                object:nil];
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoadedNotification:)
-                                                 name:@"imageLoadet" object:nil];
+                                                 name:@"imageLoaded" object:nil];
     
 
 }
 - (void)viewDidUnload
 {
-    // отменяем "прослушку"
-    [[NSNotificationCenter defaultCenter] removeObserver:vkRequest];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
     [super viewDidUnload];
 }
 
-// "слушаем" notification
+// listen notification. if find album were changed thumbnail and reload it
 -(void) imageLoadedNotification:(NSNotification*)notification {
-    // если не пришла страна,
-    // для которой загрузился флаг - ничего не делаем
-    if ( notification.object == nil )
+     if ( notification.object == nil )
         return;
-    
-    // достаем страну, для которой загрузился флаг
     MITPhotoAlbum* album = (MITPhotoAlbum*)notification.object;
-    
-    // помечаем переменную, чтобы мы ее могли изменить в блоке
     __block NSIndexPath* indexPath = nil;
-    
-    // перебираем массив со странами и ищем ту,
-    // для которой загрузился флаг
     [[vkRequest albums]
      enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
      {
-         // здесь мы сравниваем адрес объекта!
-         // т.к. они берутся из одной коллекции - этого достаточно
          if ( obj == album ) {
-             // нашли! запомним положение в tableView
-             indexPath
-             = [NSIndexPath indexPathForRow:idx inSection:0];
-             // остановим "перебор"
+             indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
              *stop = YES;
          }
      }];
-    
-    // если нашли страну - обновим ячейку, в которой она показывается
     if ( indexPath != nil ) {
         dispatch_sync(dispatch_get_main_queue(), ^{
             [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
@@ -89,11 +71,13 @@
     }
 }
 
+//reload all table
 - (void)reloadArray{
-    NSLog(@"DataReloadet");
+    //NSLog(@"DataReloaded");
     [self.tableView reloadData];
 
 }
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([[segue identifier] isEqualToString:@"toSelectedAlbum"])
@@ -102,11 +86,13 @@
         MITPhotosViewController* selectedAlbum = [segue destinationViewController];
         NSIndexPath* path = [self.tableView indexPathForSelectedRow];
         MITPhotoAlbum* currentAlbum = [[vkRequest albums] objectAtIndex:[path row]];
+        //check if current album have array with photo. If not loaded there will load in main thread
         if ([currentAlbum.photos count] <= 0) {
             [currentAlbum loadPhotosArrayInBackground];
         }
-        [selectedAlbum setCurentAlbum:currentAlbum];
-        [selectedAlbum setVkRequest:vkRequest];
+        //send current album to next screen
+        [selectedAlbum setCurrentAlbum:currentAlbum];
+
         
         
     }
@@ -142,6 +128,7 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    //make custom cell with bigger image, activity indicator and label for two line
     MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
     UIImageView *albumPreview = (UIImageView *)[cell viewWithTag:105];
     UIActivityIndicatorView *actInd = (UIActivityIndicatorView *) [cell viewWithTag:106];
@@ -149,67 +136,20 @@
     cellTitle.text= currentAlbom.title;
     albumPreview.contentMode = UIViewContentModeScaleAspectFit;
     [actInd startAnimating];
+    //check if we have not thumbnail loaded and if not, will load it
     if ( currentAlbom.thumbnail == nil ){
         [currentAlbom loadThumbnail];
         
     }else{
         albumPreview.image = currentAlbom.thumbnail;
+        //when thumbnail loaded turn of activity indicator
         [actInd stopAnimating];
         actInd.hidden =YES;
     }
-//    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
-//        
-//        [cell.textLabel setText:[currentAlbom title]];
-//    
-//    if ( currentAlbom.thumbnail == nil )
-//        [currentAlbom loadThumbnail];
-//    
-//    // назначим картинку
-//    cell.imageView.image = currentAlbom.thumbnail;
-//    
-//
-//    
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
 
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
