@@ -16,14 +16,14 @@
     return m_thumbnail;
 }
 
--(id) initWithTitle:(NSString*)title {
-    return [self initWithTitle:title thumbnailURL:nil];
+-(id) initWithTitle:(NSString*)_title {
+    return [self initWithTitle:_title thumbnailURL:nil];
 }
 
--(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL {
+-(id) initWithTitle:(NSString *)_title thumbnailURL:(NSString*)_thumbnailURL {
     self = [super init];
-    self.title = title;
-    self.thumbnailURL = [NSURL URLWithString:[thumbnailURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    self.title = _title;
+    self.thumbnailURL = [NSURL URLWithString:[_thumbnailURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     return self;
 }
 

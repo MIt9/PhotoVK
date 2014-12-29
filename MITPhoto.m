@@ -13,17 +13,17 @@
 @synthesize pid, width, height, src, src_big, src_xbig, src_xxbig;
 
 
--(id) initWithTitle:(NSString *)title Pid:(NSNumber*)pid Width:(NSNumber*)width Height:(NSNumber*)height Src:(NSString *)src Src_big:(NSString *)src_big Src_xbig:(NSString *)src_xbig Src_xxbig:(NSString *)src_xxbig {
+-(id) initWithTitle:(NSString *)_title Pid:(NSNumber*)_pid Width:(NSNumber*)_width Height:(NSNumber*)_height Src:(NSString *)_src Src_big:(NSString *)_src_big Src_xbig:(NSString *)_src_xbig Src_xxbig:(NSString *)_src_xxbig {
     
-    self = [super initWithTitle:title thumbnailURL:src];
-    self.pid = pid;
-    self.width = width;
-    self.height = height;
-    self.src = src;
-    self.src_big = src_big;
-    self.src_xbig = src_xbig;
-    self.src_xxbig = src_xxbig;
-    self.linkTo = src_big;
+    self = [super initWithTitle:_title thumbnailURL:_src_big];
+    self.pid = _pid;
+    self.width = _width;
+    self.height = _height;
+    self.src = _src;
+    self.src_big = _src_big;
+    self.src_xbig = _src_xbig;
+    self.src_xxbig = _src_xxbig;
+    self.linkTo = _src_big;
     return self;
 }
 @end

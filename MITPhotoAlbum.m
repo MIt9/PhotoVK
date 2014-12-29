@@ -12,10 +12,10 @@
 
 @synthesize aid, photos;
 
--(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)aid requestLinkforPhotoList:(NSString*)link{
+-(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)_aid requestLinkforPhotoList:(NSString*)link{
     
     self = [super initWithTitle:title thumbnailURL:thumbnailURL];
-    self.aid = aid;
+    self.aid = _aid;
     self.linkTo = link;
     
 //    [self loadPhotoList:observer requestLinkforPhotoList:link];

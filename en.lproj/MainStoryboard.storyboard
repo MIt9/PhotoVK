@@ -189,17 +189,23 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Onu-oO-lEZ"/>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3Zu-DJ-Qla">
+                                <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Onu-oO-lEZ" firstAttribute="leading" secondItem="VE3-1Q-zBD" secondAttribute="leading" type="default" id="Fy2-Lr-peL"/>
                             <constraint firstItem="Onu-oO-lEZ" firstAttribute="top" secondItem="VE3-1Q-zBD" secondAttribute="top" type="default" id="Pny-OE-9jU"/>
+                            <constraint firstItem="3Zu-DJ-Qla" firstAttribute="centerX" secondItem="Onu-oO-lEZ" secondAttribute="centerX" type="default" id="SW0-fV-4y6"/>
                             <constraint firstItem="Onu-oO-lEZ" firstAttribute="bottom" secondItem="VE3-1Q-zBD" secondAttribute="bottom" type="default" id="cw1-m3-2qK"/>
+                            <constraint firstItem="3Zu-DJ-Qla" firstAttribute="centerY" secondItem="Onu-oO-lEZ" secondAttribute="centerY" type="default" id="j0k-sQ-t6j"/>
                             <constraint firstItem="Onu-oO-lEZ" firstAttribute="trailing" secondItem="VE3-1Q-zBD" secondAttribute="trailing" type="default" id="u4v-yV-0Sw"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="dga-lJ-cbu"/>
                     <connections>
+                        <outlet property="loading" destination="3Zu-DJ-Qla" id="cpa-za-gcB"/>
                         <outlet property="photoView" destination="Onu-oO-lEZ" id="DmL-qI-edc"/>
                     </connections>
                 </viewController>
@@ -226,33 +232,6 @@
             <point key="canvasLocation" x="-54" y="209"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="MITAlbumListViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumListViewController.h"/>
-        </class>
-        <class className="MITPhotosViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITPhotosViewController.h"/>
-        </class>
-        <class className="MITViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="logOut:"/>
-                <relationship kind="action" name="login:"/>
-                <relationship kind="outlet" name="authView" candidateClass="UIWebView"/>
-                <relationship kind="outlet" name="indicator" candidateClass="UIActivityIndicatorView"/>
-                <relationship kind="outlet" name="logOutButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="MITViewPhotoController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewPhotoController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="photoView" candidateClass="UIImageView"/>
-            </relationships>
-        </class>
-        <class className="NSLayoutConstraint" superclassName="NSObject">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/NSLayoutConstraint.h"/>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>

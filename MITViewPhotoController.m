@@ -14,7 +14,7 @@
 
 @implementation MITViewPhotoController
 
-@synthesize photoView, currentPhoto;
+@synthesize photoView, currentPhoto, loading;
 
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -30,6 +30,7 @@
 {
     [super viewDidLoad];
     self.title = currentPhoto.title;
+    [loading startAnimating];
     self.photoView.contentMode = UIViewContentModeScaleAspectFill;
     NSString* link;
     if (currentPhoto.src_xxbig != nil) {
@@ -42,6 +43,8 @@
 
     [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:link]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         self.photoView.image = [UIImage imageWithData:data];
+        [loading stopAnimating];
+        loading.hidden = YES;
     }];
     
     //[self.photoView setImage:image];

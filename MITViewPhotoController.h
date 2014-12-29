@@ -10,5 +10,6 @@
 #import "MITPhoto.h"
 @interface MITViewPhotoController : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
+@property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loading;
 @property (nonatomic,strong) MITPhoto* currentPhoto;
 @end
