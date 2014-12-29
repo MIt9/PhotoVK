@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
     <scenes>
-        <!--View Controller-->
+        <!--View Controller - Welcome-->
         <scene sceneID="5">
             <objects>
                 <viewController id="2" customClass="MITViewController" sceneMemberID="viewController">
@@ -59,7 +59,7 @@
                             <constraint firstAttribute="trailing" secondItem="4BA-XC-t2U" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="vld-qa-TpO"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="sHu-o6-cD0"/>
+                    <navigationItem key="navigationItem" title="Welcome" id="sHu-o6-cD0"/>
                     <connections>
                         <outlet property="authView" destination="8Fq-9U-4Hk" id="dOg-0p-q7A"/>
                         <outlet property="indicator" destination="LXA-DD-qbw" id="cS4-wX-ITC"/>
@@ -71,7 +71,7 @@
             </objects>
             <point key="canvasLocation" x="380" y="209"/>
         </scene>
-        <!--Album List View Controller-->
+        <!--Album List View Controller - Your albums-->
         <scene sceneID="9c4-aq-UmQ">
             <objects>
                 <tableViewController id="stM-7C-YHI" customClass="MITAlbumListViewController" sceneMemberID="viewController">
@@ -80,14 +80,42 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" id="xjl-JU-eTd">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" rowHeight="100" id="xjl-JU-eTd">
+                                <rect key="frame" x="0.0" y="22" width="320" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="99"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" tag="105" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wK7-un-3JK">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="82" id="58q-5p-skU"/>
+                                                <constraint firstAttribute="width" constant="102" id="6uo-vR-BVx"/>
+                                            </constraints>
+                                        </imageView>
+                                        <activityIndicatorView opaque="NO" tag="106" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cRO-rK-ede">
+                                            <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                                        </activityIndicatorView>
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="107" contentMode="left" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="163" translatesAutoresizingMaskIntoConstraints="NO" id="9Tw-2U-mdi">
+                                            <constraints>
+                                                <constraint firstAttribute="width" constant="163" id="zrC-rC-MEj"/>
+                                            </constraints>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                            <color key="highlightedColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        </label>
+                                    </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <constraints>
+                                    <constraint firstItem="wK7-un-3JK" firstAttribute="top" secondItem="xjl-JU-eTd" secondAttribute="top" constant="10" id="7mv-im-g8C"/>
+                                    <constraint firstItem="9Tw-2U-mdi" firstAttribute="top" secondItem="wK7-un-3JK" secondAttribute="top" type="default" id="K9r-9f-MhZ"/>
+                                    <constraint firstItem="9Tw-2U-mdi" firstAttribute="leading" secondItem="wK7-un-3JK" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="Ok9-aX-s7T"/>
+                                    <constraint firstItem="wK7-un-3JK" firstAttribute="leading" secondItem="xjl-JU-eTd" secondAttribute="leading" constant="20" type="default" id="Rzl-0Z-uOe"/>
+                                    <constraint firstItem="cRO-rK-ede" firstAttribute="centerY" secondItem="wK7-un-3JK" secondAttribute="centerY" type="default" id="eRe-fv-g6I"/>
+                                    <constraint firstItem="wK7-un-3JK" firstAttribute="bottom" secondItem="9Tw-2U-mdi" secondAttribute="bottom" type="default" id="mjS-di-AAc"/>
+                                    <constraint firstItem="cRO-rK-ede" firstAttribute="centerX" secondItem="wK7-un-3JK" secondAttribute="centerX" type="default" id="vuD-RN-pBv"/>
+                                </constraints>
                                 <connections>
                                     <segue destination="TNF-2a-Kwd" kind="push" identifier="toSelectedAlbum" id="Fep-Rv-ktg"/>
                                 </connections>
@@ -98,7 +126,7 @@
                             <outlet property="delegate" destination="stM-7C-YHI" id="pRF-yj-l2I"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" id="Tdc-EK-99r"/>
+                    <navigationItem key="navigationItem" title="Your albums" id="Tdc-EK-99r"/>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZHR-rb-WRy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -113,14 +141,29 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PhotoCell" id="I0W-8e-Kiq">
-                                <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                            <tableViewCell contentMode="scaleAspectFit" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PhotoCell" rowHeight="150" id="I0W-8e-Kiq">
+                                <rect key="frame" x="0.0" y="22" width="320" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                    <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="300" height="149"/>
                                     <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJh-79-Rso">
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="125" id="ELl-0E-3iu"/>
+                                                <constraint firstAttribute="width" constant="285" id="FDo-Kf-aiu"/>
+                                            </constraints>
+                                        </imageView>
+                                        <activityIndicatorView opaque="NO" tag="101" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ei4-R4-Qmg"/>
+                                    </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
+                                <constraints>
+                                    <constraint firstItem="fJh-79-Rso" firstAttribute="top" secondItem="I0W-8e-Kiq" secondAttribute="top" constant="10" id="4QU-IG-RdA"/>
+                                    <constraint firstItem="ei4-R4-Qmg" firstAttribute="centerX" secondItem="fJh-79-Rso" secondAttribute="centerX" type="default" id="bzP-70-YLw"/>
+                                    <constraint firstItem="ei4-R4-Qmg" firstAttribute="top" secondItem="I0W-8e-Kiq" secondAttribute="top" constant="31" id="m5d-M6-aNQ"/>
+                                    <constraint firstItem="fJh-79-Rso" firstAttribute="leading" secondItem="I0W-8e-Kiq" secondAttribute="leading" constant="10" id="tlt-y3-BiA"/>
+                                </constraints>
                                 <connections>
                                     <segue destination="OWR-so-Psh" kind="push" identifier="toPhotoViewer" id="Xsv-b8-8IT"/>
                                 </connections>

@@ -55,14 +55,15 @@
             NSString* src_xxbig = [diction objectForKey:@"src_xxbig"];
             MITPhoto* photo = [[MITPhoto alloc]initWithTitle:title Pid:pid Width:width Height:height Src:src Src_big:src_big Src_xbig:src_xbig Src_xxbig:src_xxbig];
             [photos addObject:photo];
+            
+            
 
         }
         //m_thumbnail = [UIImage imageWithData:data] ;
-        
-        // сообщаем, что изображение загрузилось
-//        [[NSNotificationCenter defaultCenter]
-//         postNotificationName:@"imageLoadet"
-//         object:self];
+        [[NSNotificationCenter defaultCenter]
+         postNotificationName:@"baseLoadet"
+         object:self];
+
     }
     
     

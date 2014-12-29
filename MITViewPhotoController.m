@@ -30,8 +30,17 @@
 {
     [super viewDidLoad];
     self.title = currentPhoto.title;
-    NSString *imageUrl = [currentPhoto linkTo];
-    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:imageUrl]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
+    self.photoView.contentMode = UIViewContentModeScaleAspectFill;
+    NSString* link;
+    if (currentPhoto.src_xxbig != nil) {
+        link = currentPhoto.src_xxbig;
+    }else if (currentPhoto.src_xbig != nil){
+        link = currentPhoto.src_xbig;
+    }else if (currentPhoto.src_big != nil){
+        link = currentPhoto.src_big;
+    }
+
+    [NSURLConnection sendAsynchronousRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:link]] queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *error) {
         self.photoView.image = [UIImage imageWithData:data];
     }];
     

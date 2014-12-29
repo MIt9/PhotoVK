@@ -15,4 +15,5 @@
 @property (nonatomic,strong)NSMutableArray* photos;
 -(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)aid  requestLinkforPhotoList:(NSString*)link;
 -(void) loadPhotosArray;
+-(void) loadPhotosArrayInBackground;
 @end

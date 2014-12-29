@@ -29,6 +29,7 @@
 {
     [super viewDidLoad];
     [vkRequest setAlbumsTableId:self];
+    self.tableView.rowHeight =100;
     //add observer hwo listen did album array loaded
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(reloadArray)
@@ -38,6 +39,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoadedNotification:)
                                                  name:@"imageLoadet" object:nil];
+    
 
 }
 - (void)viewDidUnload
@@ -100,6 +102,9 @@
         MITPhotosViewController* selectedAlbum = [segue destinationViewController];
         NSIndexPath* path = [self.tableView indexPathForSelectedRow];
         MITPhotoAlbum* currentAlbum = [[vkRequest albums] objectAtIndex:[path row]];
+        if ([currentAlbum.photos count] <= 0) {
+            [currentAlbum loadPhotosArrayInBackground];
+        }
         [selectedAlbum setCurentAlbum:currentAlbum];
         [selectedAlbum setVkRequest:vkRequest];
         
@@ -131,27 +136,39 @@
 {
     static NSString *CellIdentifier = @"AlbumCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-
-    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
-        
-        [cell.textLabel setText:[currentAlbom title]];
-    
-    if ( currentAlbom.thumbnail == nil )
-        [currentAlbom loadThumbnail];
-    
-    // назначим картинку
-    cell.imageView.image = currentAlbom.thumbnail;
-    
-    
-    
-    
-    
-//        NSData *data = [NSData dataWithContentsOfURL:currentAlbom.thumbnailURL];
-//        UIImage* image = [[UIImage alloc] initWithData:data];
-//    
-//        cell.imageView.image = image;
+   
     // Configure the cell...
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
+    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
+    UIImageView *albumPreview = (UIImageView *)[cell viewWithTag:105];
+    UIActivityIndicatorView *actInd = (UIActivityIndicatorView *) [cell viewWithTag:106];
+    UILabel *cellTitle = (UILabel *) [cell viewWithTag:107];
+    cellTitle.text= currentAlbom.title;
+    albumPreview.contentMode = UIViewContentModeScaleAspectFit;
+    [actInd startAnimating];
+    if ( currentAlbom.thumbnail == nil ){
+        [currentAlbom loadThumbnail];
+        
+    }else{
+        albumPreview.image = currentAlbom.thumbnail;
+        [actInd stopAnimating];
+        actInd.hidden =YES;
+    }
+//    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
+//        
+//        [cell.textLabel setText:[currentAlbom title]];
+//    
+//    if ( currentAlbom.thumbnail == nil )
+//        [currentAlbom loadThumbnail];
+//    
+//    // назначим картинку
+//    cell.imageView.image = currentAlbom.thumbnail;
+//    
+//
+//    
     return cell;
 }
 

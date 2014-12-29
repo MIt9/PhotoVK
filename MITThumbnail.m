@@ -10,7 +10,7 @@
 
 @implementation MITThumbnail
 
-@synthesize title, thumbnailURL, linkTo;
+@synthesize title, thumbnailURL, linkTo, cropImg;
 
 -(UIImage*) thumbnail {
     return m_thumbnail;
@@ -56,4 +56,5 @@
     
 
 }
+
 @end

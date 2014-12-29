@@ -30,9 +30,14 @@
 {
     [super viewDidLoad];
     self.title = curentAlbum.title;
+
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(imageLoadedNotification:)
                                                  name:@"imageLoadet" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(reloadArray)
+                                                 name:@"baseLoadet" object:nil];
+    self.tableView.rowHeight =150;
     
 }
 - (void)viewDidUnload
@@ -42,7 +47,11 @@
     
     [super viewDidUnload];
 }
-
+- (void)reloadArray{
+    NSLog(@"DataReloadet");
+    [self.tableView reloadData];
+    
+}
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -113,73 +122,37 @@
     // Return the number of rows in the section.
     return [curentAlbum.photos count];
 }
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"PhotoCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    
+    // Configure the cell...
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
     MITPhoto* photo = [[curentAlbum photos] objectAtIndex:indexPath.row];
+    UIImageView *photoPreview = (UIImageView *)[cell viewWithTag:100];
+    UIActivityIndicatorView *actInd = (UIActivityIndicatorView *) [cell viewWithTag:101];
+    photoPreview.contentMode = UIViewContentModeScaleAspectFit;
+    [actInd startAnimating];
+    if ( photo.thumbnail == nil ){
+       [photo loadThumbnail];
+        
+    }else{
+        photoPreview.image = photo.thumbnail;
+        [actInd stopAnimating];
+        actInd.hidden =YES;
+    }
     
-    [cell.textLabel setText:[photo title]];
-    
-    if ( photo.thumbnail == nil )
-        [photo loadThumbnail];
-    
-    // назначим картинку
-    cell.imageView.image = photo.thumbnail;
     
     
     
-    
-    
-//    NSData *data = [NSData dataWithContentsOfURL:photo.thumbnailURL];
-//    UIImage* image = [[UIImage alloc] initWithData:data];
-    
-//    cell.imageView.image = image;
-    // Configure the cell...
-    
+//    photoPreview.image = [photo imageByCropping:photo.thumbnail toRect:CGRectMake(85, 83, 285, 80)];
     return cell;
 }
 
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
