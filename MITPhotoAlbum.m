@@ -13,7 +13,7 @@
 @synthesize aid, photos;
 
 //init with all vars
--(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)_aid requestLinkforPhotoList:(NSString*)link{
+-(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSString*)_aid requestLinkforPhotoList:(NSString*)link{
     
     self = [super initWithTitle:title thumbnailURL:thumbnailURL];
     self.aid = _aid;
@@ -22,22 +22,20 @@
     return self;
 }
 
--(void) loadPhotosArray{
-    // parsing and loading photos array in background
-    [self performSelectorInBackground:@selector(loadPhotosArrayInBackground)
-                           withObject:nil];
-}
+//-(void) loadPhotosArray{
+//    // parsing and loading photos array in background
+//    [self performSelectorInBackground:@selector(loadPhotosArrayInBackground)
+//                           withObject:nil];
+//}
 
--(void) loadPhotosArrayInBackground {
-    
-    
-    
+-(void) loadPhotosArray {
     NSLog(@"link to %@",self.linkTo);
     NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.linkTo]];
     NSError* error = nil;
     NSData* data =
     [NSURLConnection sendSynchronousRequest:request
-                          returningResponse:nil error:&error];
+                          returningResponse:nil
+                                      error:&error];
     
     if ( error == nil ) {
         //parsing
@@ -54,7 +52,14 @@
             NSString* src_big = [diction objectForKey:@"src_big"];
             NSString* src_xbig = [diction objectForKey:@"src_xbig"];
             NSString* src_xxbig = [diction objectForKey:@"src_xxbig"];
-            MITPhoto* photo = [[MITPhoto alloc]initWithTitle:title Pid:pid Width:width Height:height Src:src Src_big:src_big Src_xbig:src_xbig Src_xxbig:src_xxbig];
+            MITPhoto* photo = [[MITPhoto alloc]initWithTitle:title
+                                                         Pid:pid
+                                                       Width:width
+                                                      Height:height
+                                                         Src:src
+                                                     Src_big:src_big
+                                                    Src_xbig:src_xbig
+                                                   Src_xxbig:src_xxbig];
             [photos addObject:photo];
             
             

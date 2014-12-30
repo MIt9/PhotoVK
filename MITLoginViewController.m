@@ -10,8 +10,8 @@
 #define SCOPE  @"photos"
 
 #import "MITLoginViewController.h"
-#import "MITRequest.h"
 #import "MITAlbumListViewController.h"
+#import "MITPhotoAlbum.h"
 
 @interface MITLoginViewController ()
 
@@ -21,7 +21,7 @@
 
 @synthesize authView, indicator, secret, logOutButton;
 
-MITRequest *vkRequest;
+NSMutableArray *albumList;
 
 - (void)viewDidLoad
 {
@@ -63,13 +63,15 @@ MITRequest *vkRequest;
 {
     if ([[segue identifier] isEqualToString:@"toAlbumList"])
     {
-        NSLog(@"inside array: %@", [vkRequest albums]);
-        MITAlbumListViewController* albumList = [segue destinationViewController];
-        [albumList setVkRequest:vkRequest];
+//        NSLog(@"inside array: %@", [vkRequest albums]);
+        MITAlbumListViewController* alvc = [segue destinationViewController];
+        [alvc setAlbumList:albumList];
         
         
     }
 }
+
+
 
 //Action on pressing button login
 - (IBAction)login:(id)sender {
@@ -108,7 +110,9 @@ MITRequest *vkRequest;
         if(accessToken){
             [[NSUserDefaults standardUserDefaults] setObject:accessToken forKey:@"VKAccessToken"];
             [[NSUserDefaults standardUserDefaults] synchronize];
-            vkRequest = [[MITRequest alloc]initFromNSUserDefaults];
+            
+            albumList = [self getAlbumList];
+            //vkRequest = [[MITRequest alloc]initFromNSUserDefaults];
         }
         
 
@@ -151,6 +155,7 @@ MITRequest *vkRequest;
         [self sendSuccessWithMessage:@"You logout fine!"];
     
 }
+
 - (void) sendFailedWithError:(NSString *)error {
     
     UIAlertView *myAlertView = [[UIAlertView alloc] initWithTitle:@"Failed!"
@@ -166,6 +171,45 @@ MITRequest *vkRequest;
     
 }
 
-
+-(NSMutableArray *)getAlbumList{
+    NSString* link = [[NSString alloc] getAlbumList];
+    NSMutableArray* array;
+    
+    NSLog(@"link for  getAlbumList %@",link);
+    NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:link]];
+    NSError* error = nil;
+    NSData* data =
+    [NSURLConnection sendSynchronousRequest:request
+                          returningResponse:nil error:&error];
+    
+    if ( error == nil ) {
+        //parsing
+        array = [[NSMutableArray alloc]init];
+        NSDictionary* allData = [NSJSONSerialization JSONObjectWithData:data options:0 error:nil];
+        NSArray* responseArray = [allData objectForKey:@"response"];
+        for (NSDictionary* diction in responseArray) {
+            NSString* aid = [diction objectForKey:@"aid"];
+            NSString* title = [diction objectForKey:@"title"];
+            NSString* linkThumbSrc = [diction objectForKey:@"thumb_src"];
+            //formatting long for load photos to array
+            NSString* link = [[NSString alloc] getCurrentAlbum:aid];
+            
+            MITPhotoAlbum* cAlbum =[[MITPhotoAlbum alloc]initWithTitle:title
+                                                          thumbnailURL:linkThumbSrc
+                                                                   aid:aid
+                                               requestLinkforPhotoList:link];
+            
+            //loading current album photos array in background
+//            [cAlbum loadPhotosArray];
+            //add to albums array
+            [array addObject:cAlbum];
+            
+            
+        }
+        
+        
+    }
+    return array;
+}
 
 @end

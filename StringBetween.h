@@ -12,4 +12,6 @@
 @interface NSString (StringBetween)
 - (NSString *)getStringBetweenString:(NSString *)first andString:(NSString *)second;
 + (NSString *) md5String:(NSString*)concat;
+- (NSString *)getAlbumList;
+- (NSString *)getCurrentAlbum:(NSString *)idAlbum;
 @end

@@ -8,13 +8,14 @@
 
 #import "MITAlbumListViewController.h"
 #import "MITPhotoAlbum.h"
+#import "MITAlbumCell.h"
 #import "MITPhotosViewController.h"
 @interface MITAlbumListViewController ()
 
 @end
 
 @implementation MITAlbumListViewController
-@synthesize vkRequest;
+@synthesize albumList;
 
 - (id)initWithStyle:(UITableViewStyle)style
 {
@@ -28,48 +29,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [vkRequest setAlbumsTableId:self];
+    
     self.tableView.rowHeight =100;
-    //add observer hwo listen did album array loaded
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(reloadArray)
-                                                 name:@"AlbumIsLoaded"
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(imageLoadedNotification:)
-                                                 name:@"imageLoaded" object:nil];
-    
 
 }
-- (void)viewDidUnload
-{
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
-    [super viewDidUnload];
-}
+
 
 // listen notification. if find album were changed thumbnail and reload it
--(void) imageLoadedNotification:(NSNotification*)notification {
-     if ( notification.object == nil )
-        return;
-    MITPhotoAlbum* album = (MITPhotoAlbum*)notification.object;
-    __block NSIndexPath* indexPath = nil;
-    [[vkRequest albums]
-     enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-     {
-         if ( obj == album ) {
-             indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-             *stop = YES;
-         }
-     }];
-    if ( indexPath != nil ) {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-        });
-
-    }
-}
+//-(void) imageLoadedNotification:(NSNotification*)notification {
+//     if ( notification.object == nil )
+//        return;
+//    MITPhotoAlbum* album = (MITPhotoAlbum*)notification.object;
+//    __block NSIndexPath* indexPath = nil;
+//    [albumList
+//     enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
+//     {
+//         if ( obj == album ) {
+//             indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
+//             *stop = YES;
+//         }
+//     }];
+//    if ( indexPath != nil ) {
+//        dispatch_sync(dispatch_get_main_queue(), ^{
+//            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
+//        });
+//
+//    }
+//}
 
 //reload all table
 - (void)reloadArray{
@@ -85,10 +71,10 @@
 
         MITPhotosViewController* selectedAlbum = [segue destinationViewController];
         NSIndexPath* path = [self.tableView indexPathForSelectedRow];
-        MITPhotoAlbum* currentAlbum = [[vkRequest albums] objectAtIndex:[path row]];
+        MITPhotoAlbum* currentAlbum = [albumList objectAtIndex:[path row]];
         //check if current album have array with photo. If not loaded there will load in main thread
         if ([currentAlbum.photos count] <= 0) {
-            [currentAlbum loadPhotosArrayInBackground];
+            [currentAlbum loadPhotosArray];
         }
         //send current album to next screen
         [selectedAlbum setCurrentAlbum:currentAlbum];
@@ -115,38 +101,37 @@
 {
     // Return the number of rows in the section.
 
-    return [vkRequest.albums count];
+    return [albumList count];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"AlbumCell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    MITAlbumCell *albumCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
    
     // Configure the cell...
-    if (cell == nil) {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-    }
+//    if (albumCell == nil) {
+//        albumCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+//    }
     
     //make custom cell with bigger image, activity indicator and label for two line
-    MITPhotoAlbum * currentAlbom = [[vkRequest albums] objectAtIndex:indexPath.row];
-    UIImageView *albumPreview = (UIImageView *)[cell viewWithTag:105];
-    UIActivityIndicatorView *actInd = (UIActivityIndicatorView *) [cell viewWithTag:106];
-    UILabel *cellTitle = (UILabel *) [cell viewWithTag:107];
-    cellTitle.text= currentAlbom.title;
-    albumPreview.contentMode = UIViewContentModeScaleAspectFit;
-    [actInd startAnimating];
+    MITPhotoAlbum * currentAlbom = [albumList objectAtIndex:indexPath.row];
+
+    albumCell.albumTitleLabel.text = currentAlbom.title;
+    
+
+    [albumCell.albumIndicatorA startAnimating];
     //check if we have not thumbnail loaded and if not, will load it
     if ( currentAlbom.thumbnail == nil ){
         [currentAlbom loadThumbnail];
         
     }else{
-        albumPreview.image = currentAlbom.thumbnail;
+        albumCell.albumThumbnailView.image = currentAlbom.thumbnail;
         //when thumbnail loaded turn of activity indicator
-        [actInd stopAnimating];
-        actInd.hidden =YES;
+        [albumCell.albumIndicatorA startAnimating];
+        albumCell.albumIndicatorA.hidden =YES;
     }
-    return cell;
+    return albumCell;
 }
 
 

@@ -11,9 +11,9 @@
 #import "MITPhoto.h"
 @interface MITPhotoAlbum : MITThumbnail
 
-@property (nonatomic,strong)NSNumber* aid;
+@property (nonatomic,strong)NSString* aid;
 @property (nonatomic,strong)NSMutableArray* photos;
--(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSNumber*)aid  requestLinkforPhotoList:(NSString*)link;
+-(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL aid:(NSString*)aid  requestLinkforPhotoList:(NSString*)link;
 -(void) loadPhotosArray;
--(void) loadPhotosArrayInBackground;
+
 @end

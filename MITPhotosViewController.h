@@ -7,7 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MITRequest.h"
 #import "MITPhotoAlbum.h"
 #import "MITPhoto.h"
 

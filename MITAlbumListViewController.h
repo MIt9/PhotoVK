@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "MITRequest.h"
+#import "MITPhotoAlbum.h"
 
 @interface MITAlbumListViewController : UITableViewController<UITableViewDelegate, UITableViewDataSource>
 
-@property (nonatomic, strong) MITRequest * vkRequest;
+@property (nonatomic, strong) NSMutableArray* albumList;
 @end

@@ -80,25 +80,25 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" rowHeight="100" id="xjl-JU-eTd">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AlbumCell" rowHeight="100" id="xjl-JU-eTd" customClass="MITAlbumCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="99"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" tag="105" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="wK7-un-3JK">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="G4v-fi-WtU">
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="82" id="58q-5p-skU"/>
-                                                <constraint firstAttribute="width" constant="102" id="6uo-vR-BVx"/>
+                                                <constraint firstAttribute="height" constant="82" id="Lpi-8Y-nnB"/>
+                                                <constraint firstAttribute="width" constant="108" id="XZo-t6-RUQ"/>
                                             </constraints>
                                         </imageView>
-                                        <activityIndicatorView opaque="NO" tag="106" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="cRO-rK-ede">
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="nqg-EA-C4F">
                                             <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                                         </activityIndicatorView>
-                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" tag="107" contentMode="left" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="163" translatesAutoresizingMaskIntoConstraints="NO" id="9Tw-2U-mdi">
+                                        <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" preferredMaxLayoutWidth="152" translatesAutoresizingMaskIntoConstraints="NO" id="Ma6-iF-4Ma">
                                             <constraints>
-                                                <constraint firstAttribute="width" constant="163" id="zrC-rC-MEj"/>
+                                                <constraint firstAttribute="width" constant="152" id="Xt7-TE-u5s"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                             <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -108,15 +108,18 @@
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
-                                    <constraint firstItem="wK7-un-3JK" firstAttribute="top" secondItem="xjl-JU-eTd" secondAttribute="top" constant="10" id="7mv-im-g8C"/>
-                                    <constraint firstItem="9Tw-2U-mdi" firstAttribute="top" secondItem="wK7-un-3JK" secondAttribute="top" type="default" id="K9r-9f-MhZ"/>
-                                    <constraint firstItem="9Tw-2U-mdi" firstAttribute="leading" secondItem="wK7-un-3JK" secondAttribute="trailing" constant="8" symbolic="YES" type="default" id="Ok9-aX-s7T"/>
-                                    <constraint firstItem="wK7-un-3JK" firstAttribute="leading" secondItem="xjl-JU-eTd" secondAttribute="leading" constant="20" type="default" id="Rzl-0Z-uOe"/>
-                                    <constraint firstItem="cRO-rK-ede" firstAttribute="centerY" secondItem="wK7-un-3JK" secondAttribute="centerY" type="default" id="eRe-fv-g6I"/>
-                                    <constraint firstItem="wK7-un-3JK" firstAttribute="bottom" secondItem="9Tw-2U-mdi" secondAttribute="bottom" type="default" id="mjS-di-AAc"/>
-                                    <constraint firstItem="cRO-rK-ede" firstAttribute="centerX" secondItem="wK7-un-3JK" secondAttribute="centerX" type="default" id="vuD-RN-pBv"/>
+                                    <constraint firstItem="nqg-EA-C4F" firstAttribute="leading" secondItem="xjl-JU-eTd" secondAttribute="leading" constant="53" id="58t-a4-04N"/>
+                                    <constraint firstItem="Ma6-iF-4Ma" firstAttribute="top" secondItem="G4v-fi-WtU" secondAttribute="top" type="default" id="5h7-zN-2dS"/>
+                                    <constraint firstItem="nqg-EA-C4F" firstAttribute="top" secondItem="xjl-JU-eTd" secondAttribute="top" constant="31" id="Aa4-IG-2uz"/>
+                                    <constraint firstItem="G4v-fi-WtU" firstAttribute="bottom" secondItem="Ma6-iF-4Ma" secondAttribute="bottom" type="default" id="P6W-AD-l3G"/>
+                                    <constraint firstItem="Ma6-iF-4Ma" firstAttribute="leading" secondItem="xjl-JU-eTd" secondAttribute="leading" constant="142" id="QK7-pu-FVW"/>
+                                    <constraint firstItem="G4v-fi-WtU" firstAttribute="leading" secondItem="xjl-JU-eTd" secondAttribute="leading" constant="20" type="default" id="hW2-Rp-I85"/>
+                                    <constraint firstItem="G4v-fi-WtU" firstAttribute="top" secondItem="xjl-JU-eTd" secondAttribute="top" constant="10" id="zS5-21-GkE"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="albumIndicatorA" destination="nqg-EA-C4F" id="NWW-Xz-fdv"/>
+                                    <outlet property="albumThumbnailView" destination="G4v-fi-WtU" id="VA4-vT-bfa"/>
+                                    <outlet property="albumTitleLabel" destination="Ma6-iF-4Ma" id="AOj-2a-NEh"/>
                                     <segue destination="TNF-2a-Kwd" kind="push" identifier="toSelectedAlbum" id="Fep-Rv-ktg"/>
                                 </connections>
                             </tableViewCell>
@@ -141,30 +144,34 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell contentMode="scaleAspectFit" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PhotoCell" rowHeight="150" id="I0W-8e-Kiq">
+                            <tableViewCell contentMode="scaleAspectFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="PhotoCell" rowHeight="150" id="I0W-8e-Kiq" customClass="MITPhotoCell">
                                 <rect key="frame" x="0.0" y="22" width="320" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                     <rect key="frame" x="0.0" y="0.0" width="300" height="149"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJh-79-Rso">
+                                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" translatesAutoresizingMaskIntoConstraints="NO" id="fJh-79-Rso">
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="125" id="ELl-0E-3iu"/>
                                                 <constraint firstAttribute="width" constant="285" id="FDo-Kf-aiu"/>
                                             </constraints>
                                         </imageView>
-                                        <activityIndicatorView opaque="NO" tag="101" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="ei4-R4-Qmg"/>
+                                        <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" hidesWhenStopped="YES" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="iJ9-cP-kj5">
+                                            <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                                        </activityIndicatorView>
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 </view>
                                 <constraints>
                                     <constraint firstItem="fJh-79-Rso" firstAttribute="top" secondItem="I0W-8e-Kiq" secondAttribute="top" constant="10" id="4QU-IG-RdA"/>
-                                    <constraint firstItem="ei4-R4-Qmg" firstAttribute="centerX" secondItem="fJh-79-Rso" secondAttribute="centerX" type="default" id="bzP-70-YLw"/>
-                                    <constraint firstItem="ei4-R4-Qmg" firstAttribute="top" secondItem="I0W-8e-Kiq" secondAttribute="top" constant="31" id="m5d-M6-aNQ"/>
+                                    <constraint firstItem="iJ9-cP-kj5" firstAttribute="leading" secondItem="I0W-8e-Kiq" secondAttribute="leading" constant="132" id="7jL-Gu-iUa"/>
+                                    <constraint firstItem="iJ9-cP-kj5" firstAttribute="centerY" secondItem="fJh-79-Rso" secondAttribute="centerY" type="default" id="eQq-xu-PRQ"/>
                                     <constraint firstItem="fJh-79-Rso" firstAttribute="leading" secondItem="I0W-8e-Kiq" secondAttribute="leading" constant="10" id="tlt-y3-BiA"/>
                                 </constraints>
                                 <connections>
+                                    <outlet property="photoIndicatorA" destination="iJ9-cP-kj5" id="UWy-FO-N91"/>
+                                    <outlet property="photoThumbnail" destination="fJh-79-Rso" id="wMK-de-veF"/>
                                     <segue destination="OWR-so-Psh" kind="push" identifier="toPhotoViewer" id="Xsv-b8-8IT"/>
                                 </connections>
                             </tableViewCell>
@@ -233,6 +240,14 @@
         </scene>
     </scenes>
     <classes>
+        <class className="MITAlbumCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="albumIndicatorA" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="albumThumbnailView" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="albumTitleLabel" candidateClass="UILabel"/>
+            </relationships>
+        </class>
         <class className="MITAlbumListViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITAlbumListViewController.h"/>
         </class>
@@ -246,13 +261,20 @@
                 <relationship kind="outlet" name="logOutButton" candidateClass="UIButton"/>
             </relationships>
         </class>
+        <class className="MITPhotoCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/MITPhotoCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="photoIndicatorA" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="photoThumbnail" candidateClass="UIImageView"/>
+            </relationships>
+        </class>
         <class className="MITPhotosViewController" superclassName="UITableViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITPhotosViewController.h"/>
         </class>
         <class className="MITViewPhotoController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewPhotoController.h"/>
             <relationships>
-                <relationship kind="outlet" name="loading" candidateClass="UIActivityIndicatorView"/>
+                <relationship kind="outlet" name="isLoading" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="photoView" candidateClass="UIImageView"/>
             </relationships>
         </class>
