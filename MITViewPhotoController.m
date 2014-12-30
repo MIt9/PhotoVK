@@ -31,7 +31,6 @@
     [super viewDidLoad];
     self.title = currentPhoto.title;
     [isLoading startAnimating];
-    self.photoView.contentMode = UIViewContentModeScaleAspectFill;
     NSString* link;
     //find link to biggest picture
     if (currentPhoto.src_xxbig != nil) {
@@ -58,5 +57,30 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+//pinc-to-zoom
+- (IBAction)pinching:(UIGestureRecognizer *)sender {
+    
+    CGFloat lastScaleFactor = 1;
+    CGFloat factor = [(UIPinchGestureRecognizer *) sender scale];
+//zooming in
+    if (factor >1) {
+        self.photoView.transform=CGAffineTransformMakeScale(
+                lastScaleFactor + (factor -1),
+                lastScaleFactor + (factor -1));
+//zooming out
+    }else{
+        self.photoView.transform=CGAffineTransformMakeScale(
+                lastScaleFactor * factor,
+                lastScaleFactor * factor);
+    }
+    if (sender.state == UIGestureRecognizerStateEnded) {
+        if (factor > 1) {
+            lastScaleFactor += (factor -1);
+        }else{
+            lastScaleFactor *= factor;
+        }
+    }
 
+
+}
 @end

@@ -195,7 +195,12 @@
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Onu-oO-lEZ"/>
+                            <imageView multipleTouchEnabled="YES" contentMode="center" translatesAutoresizingMaskIntoConstraints="NO" id="Onu-oO-lEZ">
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="uZb-Kn-Khr" appends="YES" id="ISf-t0-NG8"/>
+                                </connections>
+                            </imageView>
                             <activityIndicatorView opaque="NO" contentMode="scaleToFill" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="3Zu-DJ-Qla">
                                 <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                             </activityIndicatorView>
@@ -217,6 +222,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h9Z-HR-xLt" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <pinchGestureRecognizer id="uZb-Kn-Khr">
+                    <connections>
+                        <action selector="pinching:" destination="OWR-so-Psh" id="9Fg-jy-NQT"/>
+                    </connections>
+                </pinchGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1651" y="209"/>
         </scene>
@@ -274,6 +284,7 @@
         <class className="MITViewPhotoController" superclassName="UIViewController">
             <source key="sourceIdentifier" type="project" relativePath="./Classes/MITViewPhotoController.h"/>
             <relationships>
+                <relationship kind="action" name="pinching:" candidateClass="UIPinchGestureRecognizer"/>
                 <relationship kind="outlet" name="isLoading" candidateClass="UIActivityIndicatorView"/>
                 <relationship kind="outlet" name="photoView" candidateClass="UIImageView"/>
             </relationships>

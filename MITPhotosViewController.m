@@ -6,6 +6,8 @@
 //  Copyright (c) 2014 Dmitrii Bilukha. All rights reserved.
 //
 
+#define VKQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+
 #import "MITPhotosViewController.h"
 #import "MITViewPhotoController.h"
 #import "MITPhotoCell.h"
@@ -118,16 +120,39 @@
     MITPhoto* photo = [[currentAlbum photos] objectAtIndex:indexPath.row];
     
     [photoCell.photoIndicatorA startAnimating];
+//    if ( photo.thumbnail == nil ){
+////       [photo loadThumbnail];
+//        
+//    }else{
+//        photoCell.photoThumbnail.image = photo.thumbnail;
+//        [photoCell.photoIndicatorA stopAnimating];
+//
+//    }
+//    
     if ( photo.thumbnail == nil ){
-       [photo loadThumbnail];
+        dispatch_async(VKQueue, ^{
+            NSData *imgData = [NSData dataWithContentsOfURL:photo.thumbnailURL];
+            if (imgData) {
+                UIImage *image = [UIImage imageWithData:imgData];
+                if (image) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        MITPhotoCell *updateCell = (id)[tableView cellForRowAtIndexPath:indexPath];
+                        if (updateCell)
+                            [photo setThumbnail:image];
+                        [photoCell.photoIndicatorA stopAnimating];
+                        photoCell.photoIndicatorA.hidden =YES;
+                        updateCell.photoThumbnail.image = image;
+                    });
+                }
+            }
+        });
         
     }else{
         photoCell.photoThumbnail.image = photo.thumbnail;
+        //when thumbnail loaded turn of activity indicator
         [photoCell.photoIndicatorA stopAnimating];
-
+        photoCell.photoIndicatorA.hidden =YES;
     }
-    
-    
     
     
 //    photoPreview.image = [photo imageByCropping:photo.thumbnail toRect:CGRectMake(85, 83, 285, 80)];

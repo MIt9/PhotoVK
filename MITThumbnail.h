@@ -14,7 +14,7 @@
 
 @property (nonatomic, copy) NSString* title;
 @property (nonatomic, copy) NSURL* thumbnailURL;
-@property (nonatomic, readonly) UIImage* thumbnail;
+@property (nonatomic, strong) UIImage* thumbnail;
 @property (nonatomic, strong) NSString* linkTo;
 
 -(id) initWithTitle:(NSString*)title;

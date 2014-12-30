@@ -10,6 +10,7 @@
 #import "MITPhoto.h"
 @interface MITViewPhotoController : UIViewController
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
+- (IBAction)pinching:(UIPinchGestureRecognizer *)sender;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *isLoading;
 @property (nonatomic,strong) MITPhoto* currentPhoto;
 @end

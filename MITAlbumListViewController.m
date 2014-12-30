@@ -6,10 +6,14 @@
 //  Copyright (c) 2014 Dmitii Bilukha. All rights reserved.
 //
 
+#define VKQueue dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0)
+
 #import "MITAlbumListViewController.h"
 #import "MITPhotoAlbum.h"
 #import "MITAlbumCell.h"
 #import "MITPhotosViewController.h"
+
+
 @interface MITAlbumListViewController ()
 
 @end
@@ -110,9 +114,9 @@
     MITAlbumCell *albumCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
    
     // Configure the cell...
-//    if (albumCell == nil) {
-//        albumCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-//    }
+    if (albumCell == nil) {
+        albumCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
     
     //make custom cell with bigger image, activity indicator and label for two line
     MITPhotoAlbum * currentAlbom = [albumList objectAtIndex:indexPath.row];
@@ -121,16 +125,43 @@
     
 
     [albumCell.albumIndicatorA startAnimating];
+
+
     //check if we have not thumbnail loaded and if not, will load it
+    //    if ( currentAlbom.thumbnail == nil ){
+    //        [currentAlbom loadThumbnail];
+    //
+    //    }else{
+    //        albumCell.albumThumbnailView.image = currentAlbom.thumbnail;
+    //        //when thumbnail loaded turn of activity indicator
+    //        [albumCell.albumIndicatorA stopAnimating];
+    //        albumCell.albumIndicatorA.hidden =YES;
+    //    }
     if ( currentAlbom.thumbnail == nil ){
-        [currentAlbom loadThumbnail];
+        dispatch_async(VKQueue, ^{
+            NSData *imgData = [NSData dataWithContentsOfURL:currentAlbom.thumbnailURL];
+            if (imgData) {
+                UIImage *image = [UIImage imageWithData:imgData];
+                if (image) {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        MITAlbumCell *updateCell = (id)[tableView cellForRowAtIndexPath:indexPath];
+                        if (updateCell)
+                            [currentAlbom setThumbnail:image];
+                            [albumCell.albumIndicatorA stopAnimating];
+                            albumCell.albumIndicatorA.hidden =YES;
+                            updateCell.albumThumbnailView.image = image;
+                    });
+                }
+            }
+        });
         
     }else{
         albumCell.albumThumbnailView.image = currentAlbom.thumbnail;
         //when thumbnail loaded turn of activity indicator
-        [albumCell.albumIndicatorA startAnimating];
+        [albumCell.albumIndicatorA stopAnimating];
         albumCell.albumIndicatorA.hidden =YES;
     }
+
     return albumCell;
 }
 

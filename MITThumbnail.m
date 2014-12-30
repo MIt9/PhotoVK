@@ -10,11 +10,11 @@
 
 @implementation MITThumbnail
 
-@synthesize title, thumbnailURL, linkTo;
+@synthesize title, thumbnailURL, linkTo, thumbnail;
 
--(UIImage*) thumbnail {
-    return m_thumbnail;
-}
+//-(UIImage*) thumbnail {
+//    return m_thumbnail;
+//}
 
 -(id) initWithTitle:(NSString*)_title {
     return [self initWithTitle:_title thumbnailURL:nil];
@@ -28,32 +28,32 @@
 }
 
 // loading thumbnail in background
--(void) loadThumbnail{
-    [self performSelectorInBackground:@selector(loadThumbnailInBackground)
-                           withObject:nil];
-}
-
--(void) loadThumbnailInBackground {
-
-    
-    NSURLRequest* request = [NSURLRequest requestWithURL:self.thumbnailURL];
-    NSError* error = nil;
-    NSData* data =
-    [NSURLConnection sendSynchronousRequest:request
-                          returningResponse:nil error:&error];
-    
-    if ( error == nil ) {
-        //image loading
-        
-        m_thumbnail = [UIImage imageWithData:data] ;
-        
-        // send notification image loaded
-        [[NSNotificationCenter defaultCenter]
-         postNotificationName:@"imageLoaded"
-         object:self];
-    }
-    
-
-}
+//-(void) loadThumbnail{
+//    [self performSelectorInBackground:@selector(loadThumbnailInBackground)
+//                           withObject:nil];
+//}
+//
+//-(void) loadThumbnailInBackground {
+//
+//    
+//    NSURLRequest* request = [NSURLRequest requestWithURL:self.thumbnailURL];
+//    NSError* error = nil;
+//    NSData* data =
+//    [NSURLConnection sendSynchronousRequest:request
+//                          returningResponse:nil error:&error];
+//    
+//    if ( error == nil ) {
+//        //image loading
+//        
+//        m_thumbnail = [UIImage imageWithData:data] ;
+//        
+//        // send notification image loaded
+//        [[NSNotificationCenter defaultCenter]
+//         postNotificationName:@"imageLoaded"
+//         object:self];
+//    }
+//    
+//
+//}
 
 @end
