@@ -8,9 +8,10 @@
 
 #import <UIKit/UIKit.h>
 #import "MITPhoto.h"
-@interface MITViewPhotoController : UIViewController
+@interface MITViewPhotoController : UIViewController <UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UIImageView *photoView;
-- (IBAction)pinching:(UIPinchGestureRecognizer *)sender;
+//- (IBAction)pinching:(UIGestureRecognizer *)sender;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *isLoading;
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (nonatomic,strong) MITPhoto* currentPhoto;
 @end

@@ -22,12 +22,6 @@
     return self;
 }
 
-//-(void) loadPhotosArray{
-//    // parsing and loading photos array in background
-//    [self performSelectorInBackground:@selector(loadPhotosArrayInBackground)
-//                           withObject:nil];
-//}
-
 -(void) loadPhotosArray {
     NSLog(@"link to %@",self.linkTo);
     NSURLRequest* request = [NSURLRequest requestWithURL:[NSURL URLWithString:self.linkTo]];

@@ -38,29 +38,6 @@
 
 }
 
-
-// listen notification. if find album were changed thumbnail and reload it
-//-(void) imageLoadedNotification:(NSNotification*)notification {
-//     if ( notification.object == nil )
-//        return;
-//    MITPhotoAlbum* album = (MITPhotoAlbum*)notification.object;
-//    __block NSIndexPath* indexPath = nil;
-//    [albumList
-//     enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop)
-//     {
-//         if ( obj == album ) {
-//             indexPath = [NSIndexPath indexPathForRow:idx inSection:0];
-//             *stop = YES;
-//         }
-//     }];
-//    if ( indexPath != nil ) {
-//        dispatch_sync(dispatch_get_main_queue(), ^{
-//            [self.tableView reloadRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationNone];
-//        });
-//
-//    }
-//}
-
 //reload all table
 - (void)reloadArray{
     //NSLog(@"DataReloaded");
@@ -115,7 +92,8 @@
    
     // Configure the cell...
     if (albumCell == nil) {
-        albumCell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+        albumCell = (MITAlbumCell*) [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+ 
     }
     
     //make custom cell with bigger image, activity indicator and label for two line
@@ -127,16 +105,6 @@
     [albumCell.albumIndicatorA startAnimating];
 
 
-    //check if we have not thumbnail loaded and if not, will load it
-    //    if ( currentAlbom.thumbnail == nil ){
-    //        [currentAlbom loadThumbnail];
-    //
-    //    }else{
-    //        albumCell.albumThumbnailView.image = currentAlbom.thumbnail;
-    //        //when thumbnail loaded turn of activity indicator
-    //        [albumCell.albumIndicatorA stopAnimating];
-    //        albumCell.albumIndicatorA.hidden =YES;
-    //    }
     if ( currentAlbom.thumbnail == nil ){
         dispatch_async(VKQueue, ^{
             NSData *imgData = [NSData dataWithContentsOfURL:currentAlbom.thumbnailURL];

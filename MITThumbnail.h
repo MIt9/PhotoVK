@@ -20,6 +20,5 @@
 -(id) initWithTitle:(NSString*)title;
 -(id) initWithTitle:(NSString *)title thumbnailURL:(NSString*)thumbnailURL;
 
--(void) loadThumbnail;
 
 @end

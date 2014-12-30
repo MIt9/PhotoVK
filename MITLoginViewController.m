@@ -63,7 +63,6 @@ NSMutableArray *albumList;
 {
     if ([[segue identifier] isEqualToString:@"toAlbumList"])
     {
-//        NSLog(@"inside array: %@", [vkRequest albums]);
         MITAlbumListViewController* alvc = [segue destinationViewController];
         [alvc setAlbumList:albumList];
         
@@ -112,13 +111,9 @@ NSMutableArray *albumList;
             [[NSUserDefaults standardUserDefaults] synchronize];
             
             albumList = [self getAlbumList];
-            //vkRequest = [[MITRequest alloc]initFromNSUserDefaults];
         }
         
 
-        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
-        NSLog(@"VKAccessUserId = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessUserId"]);
-        
         webView.hidden = YES;
         logOutButton.hidden = NO;
         //Go to next screen AlbumList
@@ -144,14 +139,8 @@ NSMutableArray *albumList;
     }
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessUserId"];
         [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessToken"];
-        //[[NSUserDefaults standardUserDefaults] removeObjectForKey:@"VKAccessTokenDate"];
         [[NSUserDefaults standardUserDefaults] synchronize];
-        
-        
-//        NSLog(@"VKAccessToken = %@", [[NSUserDefaults standardUserDefaults] stringForKey:@"VKAccessToken"]);
-//        NSLog(@"VKAccessUserId = %i", [[NSUserDefaults standardUserDefaults] integerForKey:@"VKAccessUserId"]);
-    
-        
+      
         [self sendSuccessWithMessage:@"You logout fine!"];
     
 }
@@ -198,10 +187,7 @@ NSMutableArray *albumList;
                                                           thumbnailURL:linkThumbSrc
                                                                    aid:aid
                                                requestLinkforPhotoList:link];
-            
-            //loading current album photos array in background
-//            [cAlbum loadPhotosArray];
-            //add to albums array
+           
             [array addObject:cAlbum];
             
             
